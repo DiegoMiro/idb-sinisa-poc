@@ -116,9 +116,9 @@ rct_fivenum <- function(tbl_fivenum) {
       color <- if (is.na(diff) || diff == 0) {
         "#555555"
       } else if (diff > 0) {
-        "#2e7d32" # verde
+        "#2e7d32"
       } else {
-        "#c62828" # vermelho
+        "#c62828"
       }
       
       
@@ -134,10 +134,10 @@ rct_fivenum <- function(tbl_fivenum) {
       }
       
       # Percentual do desvio em relação ao valor Brasil (para a barra)
-      pct <- if (is.na(brasil_val) || brasil_val == 0 || is.na(diff)) {
+      pct <- if (is.na(max_diff) || max_diff == 0 || is.na(diff)) {
         NA_real_
       } else {
-        diff / brasil_val
+        abs(diff / max_diff)
       }
       
       bar_width <- if (is.na(pct)) 0 else max(0, min(1, abs(pct)))
@@ -325,4 +325,3 @@ rct_fivenum <- function(tbl_fivenum) {
 # tbl_fivenum %>%
 #   filter(index_name == "IAG0001") %>%
 #   rct_fivenum()
-
