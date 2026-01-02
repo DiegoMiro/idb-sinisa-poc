@@ -122,12 +122,12 @@ https://diegomiro.github.io/idb-sinisa-poc/
 
 ## How to Reproduce the Full Pipeline
 
-### 1. Install Dependencies
+### 1. Dependencies
 
 ```r
 install.packages(c(
   "tidyverse", "fs", "readxl", "janitor",
-  "rlang", "purrr", "logger", "sf"
+  "rlang", "purrr", "logger"
 ))
 ```
 
@@ -142,6 +142,8 @@ source("R/03_build_ibge_municipal_table.R")
 source("R/03_compare_sinisa_ibge.R")
 source("R/04_build_literature_matrix.R")
 ```
+
+Or running `r source(main.R)`
 
 ---
 

@@ -472,11 +472,11 @@ published to GitHub Pages.</p>
 </div>
 <div id="how-to-reproduce-the-full-pipeline" class="section level2">
 <h2>How to Reproduce the Full Pipeline</h2>
-<div id="install-dependencies" class="section level3">
-<h3>1. Install Dependencies</h3>
+<div id="dependencies" class="section level3">
+<h3>1. Dependencies</h3>
 <pre class="r"><code>install.packages(c(
   &quot;tidyverse&quot;, &quot;fs&quot;, &quot;readxl&quot;, &quot;janitor&quot;,
-  &quot;rlang&quot;, &quot;purrr&quot;, &quot;logger&quot;, &quot;sf&quot;
+  &quot;rlang&quot;, &quot;purrr&quot;, &quot;logger&quot;
 ))</code></pre>
 <hr />
 </div>
@@ -487,6 +487,7 @@ source(&quot;R/02_prepare_and_compute_sinisa.R&quot;)
 source(&quot;R/03_build_ibge_municipal_table.R&quot;)
 source(&quot;R/03_compare_sinisa_ibge.R&quot;)
 source(&quot;R/04_build_literature_matrix.R&quot;)</code></pre>
+<p>Or running <code>r source(main.R)</code></p>
 <hr />
 </div>
 <div id="build-the-presentation" class="section level3">
