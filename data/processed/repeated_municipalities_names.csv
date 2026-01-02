@@ -1,0 +1,458 @@
+Município,repeated,cod_IBGE,UF,Macrorregião
+Bom Jesus,5,2201903,PI,Nordeste
+Bom Jesus,5,2401701,RN,Nordeste
+Bom Jesus,5,2502201,PB,Nordeste
+Bom Jesus,5,4202537,SC,Sul
+Bom Jesus,5,4302303,RS,Sul
+Planalto,4,2925006,BA,Nordeste
+Planalto,4,3539608,SP,Sudeste
+Planalto,4,4119806,PR,Sul
+Planalto,4,4314704,RS,Sul
+Santa Helena,4,2109809,MA,Nordeste
+Santa Helena,4,2513307,PB,Nordeste
+Santa Helena,4,4123501,PR,Sul
+Santa Helena,4,4215554,SC,Sul
+Santa Inês,4,2109908,MA,Nordeste
+Santa Inês,4,2513356,PB,Nordeste
+Santa Inês,4,2927903,BA,Nordeste
+Santa Inês,4,4123600,PR,Sul
+Santa Luzia,4,2110005,MA,Nordeste
+Santa Luzia,4,2513406,PB,Nordeste
+Santa Luzia,4,2928059,BA,Nordeste
+Santa Luzia,4,3157807,MG,Sudeste
+São Domingos,4,2806800,SE,Nordeste
+São Domingos,4,2928950,BA,Nordeste
+São Domingos,4,4216107,SC,Sul
+São Domingos,4,5219803,GO,Centro-Oeste
+São Francisco,4,2513984,PB,Nordeste
+São Francisco,4,2806909,SE,Nordeste
+São Francisco,4,3161106,MG,Sudeste
+São Francisco,4,3549003,SP,Sudeste
+Vera Cruz,4,2414803,RN,Nordeste
+Vera Cruz,4,2933208,BA,Nordeste
+Vera Cruz,4,3556602,SP,Sudeste
+Vera Cruz,4,4322707,RS,Sul
+Alto Alegre,3,1400050,RR,Norte
+Alto Alegre,3,3501103,SP,Sudeste
+Alto Alegre,3,4300554,RS,Sul
+Belém,3,1501402,PA,Norte
+Belém,3,2501906,PB,Nordeste
+Belém,3,2700805,AL,Nordeste
+Boa Esperança,3,3107109,MG,Sudeste
+Boa Esperança,3,3201001,ES,Sudeste
+Boa Esperança,3,4103008,PR,Sul
+Bom Jardim,3,2102002,MA,Nordeste
+Bom Jardim,3,2602209,PE,Nordeste
+Bom Jardim,3,3300506,RJ,Sudeste
+Bom Sucesso,3,2502300,PB,Nordeste
+Bom Sucesso,3,3108008,MG,Sudeste
+Bom Sucesso,3,4103206,PR,Sul
+Bonito,3,2602308,PE,Nordeste
+Bonito,3,2904050,BA,Nordeste
+Bonito,3,5002209,MS,Centro-Oeste
+Cachoeirinha,3,1703826,TO,Norte
+Cachoeirinha,3,2603108,PE,Nordeste
+Cachoeirinha,3,4303103,RS,Sul
+Campo Grande,3,2401305,RN,Nordeste
+Campo Grande,3,2701506,AL,Nordeste
+Campo Grande,3,5002704,MS,Centro-Oeste
+Cantagalo,3,3112059,MG,Sudeste
+Cantagalo,3,3301108,RJ,Sudeste
+Cantagalo,3,4104451,PR,Sul
+Cruzeiro do Sul,3,1200203,AC,Norte
+Cruzeiro do Sul,3,4106704,PR,Sul
+Cruzeiro do Sul,3,4306205,RS,Sul
+Jussara,3,2918506,BA,Nordeste
+Jussara,3,4113007,PR,Sul
+Jussara,3,5212204,GO,Centro-Oeste
+Mundo Novo,3,2922102,BA,Nordeste
+Mundo Novo,3,5005681,MS,Centro-Oeste
+Mundo Novo,3,5214051,GO,Centro-Oeste
+Nova Olinda,3,1714880,TO,Norte
+Nova Olinda,3,2309201,CE,Nordeste
+Nova Olinda,3,2510204,PB,Nordeste
+Novo Horizonte,3,2923035,BA,Nordeste
+Novo Horizonte,3,3533502,SP,Sudeste
+Novo Horizonte,3,4211652,SC,Sul
+Ouro Branco,3,2408508,RN,Nordeste
+Ouro Branco,3,2706109,AL,Nordeste
+Ouro Branco,3,3145901,MG,Sudeste
+Santa Cruz,3,2411205,RN,Nordeste
+Santa Cruz,3,2513208,PB,Nordeste
+Santa Cruz,3,2612455,PE,Nordeste
+Santa Terezinha,3,2612802,PE,Nordeste
+Santa Terezinha,3,4215679,SC,Sul
+Santa Terezinha,3,5107776,MT,Centro-Oeste
+Triunfo,3,2516805,PB,Nordeste
+Triunfo,3,2615706,PE,Nordeste
+Triunfo,3,4322004,RS,Sul
+Viçosa,3,2414902,RN,Nordeste
+Viçosa,3,2709400,AL,Nordeste
+Viçosa,3,3171303,MG,Sudeste
+Água Branca,3,2200202,PI,Nordeste
+Água Branca,3,2500106,PB,Nordeste
+Água Branca,3,2700102,AL,Nordeste
+Alto Paraíso,2,1100403,RO,Norte
+Alto Paraíso,2,4128625,PR,Sul
+Alvorada,2,1700707,TO,Norte
+Alvorada,2,4300604,RS,Sul
+Amparo,2,2500734,PB,Nordeste
+Amparo,2,3501905,SP,Sudeste
+Anchieta,2,3200409,ES,Sudeste
+Anchieta,2,4200804,SC,Sul
+Antônio Carlos,2,3102902,MG,Sudeste
+Antônio Carlos,2,4201208,SC,Sul
+Aparecida,2,2500775,PB,Nordeste
+Aparecida,2,3502507,SP,Sudeste
+Araguanã,2,1702158,TO,Norte
+Araguanã,2,2100873,MA,Nordeste
+Araruna,2,2501005,PB,Nordeste
+Araruna,2,4101705,PR,Sul
+Areia Branca,2,2401107,RN,Nordeste
+Areia Branca,2,2800506,SE,Nordeste
+Atalaia,2,2700409,AL,Nordeste
+Atalaia,2,4102208,PR,Sul
+Aurora,2,2301703,CE,Nordeste
+Aurora,2,4201901,SC,Sul
+Bandeirantes,2,4102406,PR,Sul
+Bandeirantes,2,5001508,MS,Centro-Oeste
+Barra Bonita,2,3505302,SP,Sudeste
+Barra Bonita,2,4202099,SC,Sul
+Barra de São Miguel,2,2501708,PB,Nordeste
+Barra de São Miguel,2,2700607,AL,Nordeste
+Barracão,2,4102604,PR,Sul
+Barracão,2,4301800,RS,Sul
+Barro Alto,2,2903235,BA,Nordeste
+Barro Alto,2,5203203,GO,Centro-Oeste
+Batalha,2,2201507,PI,Nordeste
+Batalha,2,2700706,AL,Nordeste
+Belmonte,2,2903409,BA,Nordeste
+Belmonte,2,4202156,SC,Sul
+Boa Vista,2,1400100,RR,Norte
+Boa Vista,2,2502151,PB,Nordeste
+Bocaina,2,2201804,PI,Nordeste
+Bocaina,2,3506805,SP,Sudeste
+Bom Jesus do Tocantins,2,1501576,PA,Norte
+Bom Jesus do Tocantins,2,1703305,TO,Norte
+Bonfim,2,1400159,RR,Norte
+Bonfim,2,3108107,MG,Sudeste
+Borborema,2,2502706,PB,Nordeste
+Borborema,2,3507407,SP,Sudeste
+Buritis,2,1100452,RO,Norte
+Buritis,2,3109303,MG,Sudeste
+Cafelândia,2,3508801,SP,Sudeste
+Cafelândia,2,4103453,PR,Sul
+Caiçara,2,2503605,PB,Nordeste
+Caiçara,2,4303400,RS,Sul
+Campestre,2,2701357,AL,Nordeste
+Campestre,2,3111002,MG,Sudeste
+Campo Alegre,2,2701407,AL,Nordeste
+Campo Alegre,2,4203303,SC,Sul
+Canarana,2,2906204,BA,Nordeste
+Canarana,2,5102702,MT,Centro-Oeste
+Candeias,2,2906501,BA,Nordeste
+Candeias,2,3112000,MG,Sudeste
+Canápolis,2,2906105,BA,Nordeste
+Canápolis,2,3111804,MG,Sudeste
+Capanema,2,1502202,PA,Norte
+Capanema,2,4104501,PR,Sul
+Capela,2,2701704,AL,Nordeste
+Capela,2,2801306,SE,Nordeste
+Caracol,2,2202505,PI,Nordeste
+Caracol,2,5002803,MS,Centro-Oeste
+Caraúbas,2,2402303,RN,Nordeste
+Caraúbas,2,2504074,PB,Nordeste
+Cascavel,2,2303501,CE,Nordeste
+Cascavel,2,4104808,PR,Sul
+Catanduvas,2,4105003,PR,Sul
+Catanduvas,2,4204004,SC,Sul
+Cedro,2,2303808,CE,Nordeste
+Cedro,2,2604304,PE,Nordeste
+Colinas,2,2103505,MA,Nordeste
+Colinas,2,4305587,RS,Sul
+Colorado,2,4105904,PR,Sul
+Colorado,2,4305603,RS,Sul
+Condado,2,2504504,PB,Nordeste
+Condado,2,2604601,PE,Nordeste
+Conde,2,2504603,PB,Nordeste
+Conde,2,2908606,BA,Nordeste
+Davinópolis,2,2103752,MA,Nordeste
+Davinópolis,2,5206909,GO,Centro-Oeste
+Douradina,2,4107256,PR,Sul
+Douradina,2,5003504,MS,Centro-Oeste
+Eldorado,2,3514809,SP,Sudeste
+Eldorado,2,5003751,MS,Centro-Oeste
+Entre Rios,2,2910503,BA,Nordeste
+Entre Rios,2,4205175,SC,Sul
+Esperantina,2,1707405,TO,Norte
+Esperantina,2,2203701,PI,Nordeste
+Estrela do Norte,2,3515301,SP,Sudeste
+Estrela do Norte,2,5207501,GO,Centro-Oeste
+Feira Nova,2,2605400,PE,Nordeste
+Feira Nova,2,2802205,SE,Nordeste
+Filadélfia,2,1707702,TO,Norte
+Filadélfia,2,2910859,BA,Nordeste
+Floresta,2,2605707,PE,Nordeste
+Floresta,2,4107900,PR,Sul
+Formoso,2,3126208,MG,Sudeste
+Formoso,2,5208103,GO,Centro-Oeste
+Guaraci,2,3517901,SP,Sudeste
+Guaraci,2,4109203,PR,Sul
+Guaraciaba,2,3128204,MG,Sudeste
+Guaraciaba,2,4206405,SC,Sul
+Guaíra,2,3517406,SP,Sudeste
+Guaíra,2,4108809,PR,Sul
+Hidrolândia,2,2305209,CE,Nordeste
+Hidrolândia,2,5209705,GO,Centro-Oeste
+Humaitá,2,1301704,AM,Norte
+Humaitá,2,4309704,RS,Sul
+Iguatu,2,2305506,CE,Nordeste
+Iguatu,2,4110052,PR,Sul
+Independência,2,2305605,CE,Nordeste
+Independência,2,4310405,RS,Sul
+Indianópolis,2,3130705,MG,Sudeste
+Indianópolis,2,4110409,PR,Sul
+Iracema,2,1400282,RR,Norte
+Iracema,2,2306009,CE,Nordeste
+Irati,2,4110706,PR,Sul
+Irati,2,4207858,SC,Sul
+Itabaiana,2,2506905,PB,Nordeste
+Itabaiana,2,2802908,SE,Nordeste
+Itambé,2,2915809,BA,Nordeste
+Itambé,2,4111100,PR,Sul
+Itapeva,2,3133600,MG,Sudeste
+Itapeva,2,3522406,SP,Sudeste
+Itaporanga,2,2507002,PB,Nordeste
+Itaporanga,2,3522802,SP,Sudeste
+Jacutinga,2,3134905,MG,Sudeste
+Jacutinga,2,4310900,RS,Sul
+Jandaíra,2,2405108,RN,Nordeste
+Jandaíra,2,2917904,BA,Nordeste
+Japurá,2,1302108,AM,Norte
+Japurá,2,4112405,PR,Sul
+Jardim,2,2307106,CE,Nordeste
+Jardim,2,5005004,MS,Centro-Oeste
+Jardinópolis,2,3525102,SP,Sudeste
+Jardinópolis,2,4208955,SC,Sul
+Jatobá,2,2105450,MA,Nordeste
+Jatobá,2,2608057,PE,Nordeste
+Jundiá,2,2406155,RN,Nordeste
+Jundiá,2,2703908,AL,Nordeste
+Jurema,2,2205532,PI,Nordeste
+Jurema,2,2608404,PE,Nordeste
+Lagoa Grande,2,2608750,PE,Nordeste
+Lagoa Grande,2,3137536,MG,Sudeste
+Lagoa Santa,2,3137601,MG,Sudeste
+Lagoa Santa,2,5212253,GO,Centro-Oeste
+Laranjal,2,3138005,MG,Sudeste
+Laranjal,2,4113254,PR,Sul
+Maravilha,2,2704609,AL,Nordeste
+Maravilha,2,4210506,SC,Sul
+Massaranduba,2,2509206,PB,Nordeste
+Massaranduba,2,4210605,SC,Sul
+Mesquita,2,3141702,MG,Sudeste
+Mesquita,2,3302858,RJ,Sudeste
+Milagres,2,2308302,CE,Nordeste
+Milagres,2,2921302,BA,Nordeste
+Mirador,2,2106706,MA,Nordeste
+Mirador,2,4115903,PR,Sul
+Monte Alegre,2,1504802,PA,Norte
+Monte Alegre,2,2407807,RN,Nordeste
+Morrinhos,2,2308906,CE,Nordeste
+Morrinhos,2,5213806,GO,Centro-Oeste
+Mulungu,2,2309102,CE,Nordeste
+Mulungu,2,2509800,PB,Nordeste
+Natividade,2,1714203,TO,Norte
+Natividade,2,3303104,RJ,Sudeste
+Nazaré,2,1714302,TO,Norte
+Nazaré,2,2922508,BA,Nordeste
+Nova Aurora,2,4116703,PR,Sul
+Nova Aurora,2,5214804,GO,Centro-Oeste
+Nova Fátima,2,2922730,BA,Nordeste
+Nova Fátima,2,4117008,PR,Sul
+Nova Olímpia,2,4117206,PR,Sul
+Nova Olímpia,2,5106232,MT,Centro-Oeste
+Nova Santa Rita,2,2207959,PI,Nordeste
+Nova Santa Rita,2,4313375,RS,Sul
+Nova União,2,1101435,RO,Norte
+Nova União,2,3136603,MG,Sudeste
+Nova Veneza,2,4211603,SC,Sul
+Nova Veneza,2,5215009,GO,Centro-Oeste
+Ouro Verde,2,3534807,SP,Sudeste
+Ouro Verde,2,4211850,SC,Sul
+Pacatuba,2,2309706,CE,Nordeste
+Pacatuba,2,2804904,SE,Nordeste
+Palestina,2,2706208,AL,Nordeste
+Palestina,2,3535002,SP,Sudeste
+Palmas,2,1721000,TO,Norte
+Palmas,2,4117602,PR,Sul
+Palmeira,2,4117701,PR,Sul
+Palmeira,2,4212056,SC,Sul
+Palmital,2,3535309,SP,Sudeste
+Palmital,2,4117800,PR,Sul
+Parnamirim,2,2403251,RN,Nordeste
+Parnamirim,2,2610400,PE,Nordeste
+Passagem,2,2409209,RN,Nordeste
+Passagem,2,2510709,PB,Nordeste
+Paulista,2,2510907,PB,Nordeste
+Paulista,2,2610707,PE,Nordeste
+Pedra Branca,2,2310506,CE,Nordeste
+Pedra Branca,2,2511004,PB,Nordeste
+Pedra Preta,2,2409605,RN,Nordeste
+Pedra Preta,2,5106372,MT,Centro-Oeste
+Petrolândia,2,2611002,PE,Nordeste
+Petrolândia,2,4212700,SC,Sul
+Pilar,2,2511509,PB,Nordeste
+Pilar,2,2706901,AL,Nordeste
+Pilões,2,2410009,RN,Nordeste
+Pilões,2,2511608,PB,Nordeste
+Pinhalzinho,2,3538204,SP,Sudeste
+Pinhalzinho,2,4212908,SC,Sul
+Pinhão,2,2805208,SE,Nordeste
+Pinhão,2,4119301,PR,Sul
+Piranhas,2,2707107,AL,Nordeste
+Piranhas,2,5217203,GO,Centro-Oeste
+Pitangueiras,2,3539509,SP,Sudeste
+Pitangueiras,2,4119657,PR,Sul
+Praia Grande,2,3541000,SP,Sudeste
+Praia Grande,2,4213807,SC,Sul
+Prata,2,2512200,PB,Nordeste
+Prata,2,3152808,MG,Sudeste
+Presidente Bernardes,2,3153103,MG,Sudeste
+Presidente Bernardes,2,3541208,SP,Sudeste
+Presidente Dutra,2,2109106,MA,Nordeste
+Presidente Dutra,2,2925600,BA,Nordeste
+Presidente Juscelino,2,2109205,MA,Nordeste
+Presidente Juscelino,2,3153202,MG,Sudeste
+Presidente Kennedy,2,1718402,TO,Norte
+Presidente Kennedy,2,3204302,ES,Sudeste
+Presidente Médici,2,1100254,RO,Norte
+Presidente Médici,2,2109239,MA,Nordeste
+Primavera,2,1506104,PA,Norte
+Primavera,2,2611408,PE,Nordeste
+Queimadas,2,2512507,PB,Nordeste
+Queimadas,2,2925808,BA,Nordeste
+Quixaba,2,2512606,PB,Nordeste
+Quixaba,2,2611533,PE,Nordeste
+Redenção,2,1506138,PA,Norte
+Redenção,2,2311603,CE,Nordeste
+Riacho de Santana,2,2410801,RN,Nordeste
+Riacho de Santana,2,2926400,BA,Nordeste
+Riachuelo,2,2410900,RN,Nordeste
+Riachuelo,2,2805901,SE,Nordeste
+Riachão,2,2109502,MA,Nordeste
+Riachão,2,2512747,PB,Nordeste
+Rio Branco,2,1200401,AC,Norte
+Rio Branco,2,5107206,MT,Centro-Oeste
+Rio Claro,2,3304409,RJ,Sudeste
+Rio Claro,2,3543907,SP,Sudeste
+Rio Negro,2,4122305,PR,Sul
+Rio Negro,2,5007307,MS,Centro-Oeste
+Ruy Barbosa,2,2411106,RN,Nordeste
+Ruy Barbosa,2,2927200,BA,Nordeste
+Salgadinho,2,2513000,PB,Nordeste
+Salgadinho,2,2612109,PE,Nordeste
+Saltinho,2,3545159,SP,Sudeste
+Saltinho,2,4215356,SC,Sul
+Santa Bárbara,2,2927507,BA,Nordeste
+Santa Bárbara,2,3157203,MG,Sudeste
+Santa Filomena,2,2209203,PI,Nordeste
+Santa Filomena,2,2612554,PE,Nordeste
+Santa Isabel,2,3546801,SP,Sudeste
+Santa Isabel,2,5219357,GO,Centro-Oeste
+Santa Lúcia,2,3546900,SP,Sudeste
+Santa Lúcia,2,4123824,PR,Sul
+Santa Maria,2,2409332,RN,Nordeste
+Santa Maria,2,4316907,RS,Sul
+Santa Rita,2,2110203,MA,Nordeste
+Santa Rita,2,2513703,PB,Nordeste
+Santa Rosa de Lima,2,2806503,SE,Nordeste
+Santa Rosa de Lima,2,4215604,SC,Sul
+Santa Teresinha,2,2513802,PB,Nordeste
+Santa Teresinha,2,2928505,BA,Nordeste
+Santana,2,1600600,AP,Norte
+Santana,2,2928208,BA,Nordeste
+Santo André,2,2513851,PB,Nordeste
+Santo André,2,3547809,SP,Sudeste
+Sapucaia,2,1507755,PA,Norte
+Sapucaia,2,3305406,RJ,Sudeste
+Sarandi,2,4126256,PR,Sul
+Sarandi,2,4320107,RS,Sul
+Serrinha,2,2413508,RN,Nordeste
+Serrinha,2,2930501,BA,Nordeste
+Sertãozinho,2,2515930,PB,Nordeste
+Sertãozinho,2,3551702,SP,Sudeste
+Sobradinho,2,2930774,BA,Nordeste
+Sobradinho,2,4320701,RS,Sul
+Soledade,2,2516102,PB,Nordeste
+Soledade,2,4320800,RS,Sul
+São Bento,2,2110500,MA,Nordeste
+São Bento,2,2513901,PB,Nordeste
+São Carlos,2,3548906,SP,Sudeste
+São Carlos,2,4216008,SC,Sul
+São Francisco de Paula,2,3161205,MG,Sudeste
+São Francisco de Paula,2,4318200,RS,Sul
+São Gabriel,2,2929255,BA,Nordeste
+São Gabriel,2,4318309,RS,Sul
+São Gonçalo do Amarante,2,2312403,CE,Nordeste
+São Gonçalo do Amarante,2,2412005,RN,Nordeste
+São José do Divino,2,2210052,PI,Nordeste
+São José do Divino,2,3163300,MG,Sudeste
+São João,2,2613206,PE,Nordeste
+São João,2,4124806,PR,Sul
+São João Batista,2,2111003,MA,Nordeste
+São João Batista,2,4216305,SC,Sul
+São Martinho,2,4217105,SC,Sul
+São Martinho,2,4319109,RS,Sul
+São Pedro,2,2412708,RN,Nordeste
+São Pedro,2,3550407,SP,Sudeste
+São Sebastião,2,2708808,AL,Nordeste
+São Sebastião,2,3550704,SP,Sudeste
+São Simão,2,3550902,SP,Sudeste
+São Simão,2,5220405,GO,Centro-Oeste
+São Tomé,2,2412906,RN,Nordeste
+São Tomé,2,4126108,PR,Sul
+São Vicente,2,2413003,RN,Nordeste
+São Vicente,2,3551009,SP,Sudeste
+São Vicente Ferrer,2,2111706,MA,Nordeste
+São Vicente Ferrer,2,2613800,PE,Nordeste
+Tabatinga,2,1304062,AM,Norte
+Tabatinga,2,3552700,SP,Sudeste
+Tangará,2,2414001,RN,Nordeste
+Tangará,2,4217907,SC,Sul
+Tapejara,2,4126801,PR,Sul
+Tapejara,2,4320909,RS,Sul
+Taperoá,2,2516508,PB,Nordeste
+Taperoá,2,2931202,BA,Nordeste
+Tapira,2,3168101,MG,Sudeste
+Tapira,2,4126900,PR,Sul
+Tapiraí,2,3168200,MG,Sudeste
+Tapiraí,2,3553500,SP,Sudeste
+Tavares,2,2516607,PB,Nordeste
+Tavares,2,4321352,RS,Sul
+Teodoro Sampaio,2,2931400,BA,Nordeste
+Teodoro Sampaio,2,3554300,SP,Sudeste
+Terra Nova,2,2615201,PE,Nordeste
+Terra Nova,2,2931707,BA,Nordeste
+Terra Roxa,2,3554409,SP,Sudeste
+Terra Roxa,2,4127403,PR,Sul
+Toledo,2,3169109,MG,Sudeste
+Toledo,2,4127700,PR,Sul
+Trindade,2,2615607,PE,Nordeste
+Trindade,2,5221403,GO,Centro-Oeste
+Turmalina,2,3169703,MG,Sudeste
+Turmalina,2,3555307,SP,Sudeste
+Turvo,2,4127965,PR,Sul
+Turvo,2,4218806,SC,Sul
+Valença,2,2932903,BA,Nordeste
+Valença,2,3306107,RJ,Sudeste
+Vargem Bonita,2,3170602,MG,Sudeste
+Vargem Bonita,2,4219176,SC,Sul
+Várzea,2,2414704,RN,Nordeste
+Várzea,2,2517100,PB,Nordeste
+Várzea Grande,2,2211407,PI,Nordeste
+Várzea Grande,2,5108402,MT,Centro-Oeste
+Wenceslau Braz,2,3172202,MG,Sudeste
+Wenceslau Braz,2,4128500,PR,Sul
+Água Boa,2,3100609,MG,Sudeste
+Água Boa,2,5100201,MT,Centro-Oeste

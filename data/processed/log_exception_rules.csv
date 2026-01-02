@@ -1,0 +1,28 @@
+log
+[2026-01-02 08:18:16] INFO: [IDB_INDEX_V1] ==== Starting indicator calculation pipeline ====
+[2026-01-02 08:18:16] INFO: [IDB_INDEX_V1] Step 1: Computing indicators with compute_columns_safely().
+[2026-01-02 08:18:16] INFO: [IDB_INDEX_V1] Starting computation of 16 column(s).
+[2026-01-02 08:18:16] INFO: [IDB_INDEX_V1] Computing `IAG0001` with 1 exception rule(s). Expr: ((GTA0001 + GTA0002) / DFE0001) * 100 | Exceptions: (GTA0001 + GTA0002) > DFE0001
+[2026-01-02 08:18:16] INFO: [IDB_INDEX_V1] Column `IAG0001`: 25 row(s) matched exception rule(s) and were set to NA_real_.
+[2026-01-02 08:18:16] INFO: [IDB_INDEX_V1] Computing `IAG0002` with 1 exception rule(s). Expr: (GTA0001 / DFE0002) * 100 | Exceptions: GTA0001 > DFE0002
+[2026-01-02 08:18:16] INFO: [IDB_INDEX_V1] Column `IAG0002`: 32 row(s) matched exception rule(s) and were set to NA_real_.
+[2026-01-02 08:18:16] INFO: [IDB_INDEX_V1] Computing `IAG0003` with 1 exception rule(s). Expr: (GTA0002 / DFE0003) * 100 | Exceptions: GTA0002 > DFE0003
+[2026-01-02 08:18:16] INFO: [IDB_INDEX_V1] Column `IAG0003`: 14 row(s) matched exception rule(s) and were set to NA_real_.
+[2026-01-02 08:18:16] INFO: [IDB_INDEX_V1] Computing `IAG2001` with 1 exception rule(s). Expr: (GTA1214 / (GTA1001 + GTA1009 - GTA1203)) * 100 | Exceptions: (GTA1001 + GTA1009 - GTA1203) < 0
+[2026-01-02 08:18:16] INFO: [IDB_INDEX_V1] Computing `IAG2002` with expression: (GTA1214 / GTA1211) * 100
+[2026-01-02 08:18:16] INFO: [IDB_INDEX_V1] Computing `IAG2003` with expression: (GTA1005 / GTA1014) * 100
+[2026-01-02 08:18:16] INFO: [IDB_INDEX_V1] Computing `IAG2010` with expression: ((GTA1211 + GTA1207) / (GTA1001 + GTA1009 - GTA1203)) * 100
+[2026-01-02 08:18:16] INFO: [IDB_INDEX_V1] Computing `IAG2011` with expression: (GTA1221 / (GTA1001 + GTA1009)) * 100
+[2026-01-02 08:18:16] INFO: [IDB_INDEX_V1] Computing `IAG2012` with expression: ((GTA1001 + GTA1009 - GTA1221) / (GTA1001 + GTA1009)) * 100
+[2026-01-02 08:18:16] INFO: [IDB_INDEX_V1] Computing `IAG2013` with 2 exception rule(s). Expr: ((GTA1001 + GTA1009 -  GTA1207 - GTA1211 - GTA1203) / (GTA1001 + GTA1009)) * 100 | Exceptions: (GTA1001 + GTA1009 - GTA1207 - GTA1211 - GTA1203) < 0 | (GTA1203 > 5 * GTA1211)
+[2026-01-02 08:18:16] INFO: [IDB_INDEX_V1] Column `IAG2013`: 24 row(s) matched exception rule(s) and were set to NA_real_.
+[2026-01-02 08:18:16] INFO: [IDB_INDEX_V1] Computing `IAG2016` with expression: (GTA0006 / (GTA0003 + GTA0005)) * 100
+[2026-01-02 08:18:16] INFO: [IDB_INDEX_V1] Computing `IAG2023` with expression: GTA1301 / (GTA1001 + GTA1009)
+[2026-01-02 08:18:16] INFO: [IDB_INDEX_V1] Computing `IAG3001` with expression: GTA3002 / GTA3001
+[2026-01-02 08:18:16] INFO: [IDB_INDEX_V1] Computing `IAG3002` with expression: GTA3005 / GTA3003
+[2026-01-02 08:18:16] INFO: [IDB_INDEX_V1] Computing `IAG3003` with expression: GTA3104 / GTA3103
+[2026-01-02 08:18:16] INFO: [IDB_INDEX_V1] Computing `IAG3006` with expression: (GTA3107 / GTA3106) * 100
+"[2026-01-02 08:18:16] INFO: [IDB_INDEX_V1] Finished computation: 16 success(es), 0 error(s)."
+[2026-01-02 08:18:16] INFO: [IDB_INDEX_V1] Step 1b: Computing five-number summaries per index.
+[2026-01-02 08:18:16] INFO: [IDB_INDEX_V1] fivenum_index written to: data/processed/fivenum_index.csv
+[2026-01-02 08:18:16] INFO: [IDB_INDEX_V1] Step 2: Extracting last run exception logs (if any).

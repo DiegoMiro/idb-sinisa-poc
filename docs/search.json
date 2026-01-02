@@ -1,0 +1,289 @@
+[
+  {
+    "objectID": "index.html#project-context",
+    "href": "index.html#project-context",
+    "title": "IDB Proof of Concept",
+    "section": "Project Context",
+    "text": "Project Context"
+  },
+  {
+    "objectID": "index.html#project-context-1",
+    "href": "index.html#project-context-1",
+    "title": "IDB Proof of Concept",
+    "section": "Project Context",
+    "text": "Project Context\nThe primary goal of this Proof of Concept (PoC) is to demonstrate the knowledge and skills required for the Assistant Research Consultant position, as described in the LinkedIn posting.\n\nValue Proposition of the PoC\n\nValidate feasibility of the approach proposed in the Terms of Reference (ToR).\nProvide an initial foundation for a scalable analytical solution.\nDevelop a R package with a ready-to-use dataset, index calculation, and dashboard.\nDeliver a transparent and reproducible workflow."
+  },
+  {
+    "objectID": "index.html#project-context-2",
+    "href": "index.html#project-context-2",
+    "title": "IDB Proof of Concept",
+    "section": "Project Context",
+    "text": "Project Context\nEven though this is a reduced version of the full project, the PoC still covers all four deliverables proposed in the ToR.\n\nDatabase Integration: Consolidated, cleaned, and harmonized integrated database.\nLiterature Review: Excel matrix of all reviewed sources and a written report summarizing main findings of the literature.\nIndex Construction & Descriptive Statistics: Development of composite indicators into an index, including methodological note and descriptive statistics.\nCode: Fully reproducible, well-documented R code and scripts."
+  },
+  {
+    "objectID": "index.html#methodology",
+    "href": "index.html#methodology",
+    "title": "IDB Proof of Concept",
+    "section": "Methodology",
+    "text": "Methodology"
+  },
+  {
+    "objectID": "index.html#methodological-framework-crisp-dm",
+    "href": "index.html#methodological-framework-crisp-dm",
+    "title": "IDB Proof of Concept",
+    "section": "Methodological Framework: CRISP-DM",
+    "text": "Methodological Framework: CRISP-DM\n\n\nCRISP-DM (Cross-Industry Standard Process for Data Mining) is a widely adopted, practical framework that structures analytical and data science projects from conception to delivery.\n\nConnect analytical work to decision-making.\n\nUseful when clarity about the steps of an analytical project is important.\n\nImproves methodological reproducibility and supports the development of well-structured, modular documentation.\n\n\n\nFlowchart\n\n\n\n\n\n\n\nflowchart TD\n  A[Business Understanding] --&gt; B[Data Understanding]\n  B --&gt; A\n  \n  B --&gt; C[Data Preparation]\n  C --&gt; D[Modeling]\n  D --&gt; C\n  \n  D --&gt; E[Evaluation]\n  E -. feedback .-&gt; A\n  \n  E --&gt; F[Deployment]\n\n\n\n\n\n\n\n\nShearer, C. (2000). The CRISP-DM model: the new blueprint for data mining. Journal of Data Warehousing, 5 (4), 13–22."
+  },
+  {
+    "objectID": "index.html#mapping-deliverables-to-the-crisp-dm",
+    "href": "index.html#mapping-deliverables-to-the-crisp-dm",
+    "title": "IDB Proof of Concept",
+    "section": "Mapping deliverables to the CRISP-DM",
+    "text": "Mapping deliverables to the CRISP-DM\nSome necessary adjustments\n\n\n\nDeliverables 1 and 2 had to be reordered in the workflow.\nDeliverable Code and phase Deployment are not exactly the same, but they were considered equivalent."
+  },
+  {
+    "objectID": "index.html#project-stages",
+    "href": "index.html#project-stages",
+    "title": "IDB Proof of Concept",
+    "section": "Project stages",
+    "text": "Project stages"
+  },
+  {
+    "objectID": "index.html#business-understanding",
+    "href": "index.html#business-understanding",
+    "title": "IDB Proof of Concept",
+    "section": "1. Business Understanding",
+    "text": "1. Business Understanding\nInter-American Development Bank\nThe Inter-American Development Bank (IDB) is the main source of development financing for Latin America and the Caribbean, dedicated to improving the quality of life of millions of people through financial and technical support to governments and development partners (IDB website)."
+  },
+  {
+    "objectID": "index.html#business-understanding-1",
+    "href": "index.html#business-understanding-1",
+    "title": "IDB Proof of Concept",
+    "section": "1. Business Understanding",
+    "text": "1. Business Understanding\nInter-American Development Bank\nIDB is the leading multilateral development institution in Latin America and the Caribbean, providing financing, technical assistance, and innovation to support economic growth, reduce poverty and inequality, strengthen institutions, improve public services, and enhance resilience for societies across the region (cfr.org)."
+  },
+  {
+    "objectID": "index.html#business-understanding-2",
+    "href": "index.html#business-understanding-2",
+    "title": "IDB Proof of Concept",
+    "section": "1. Business Understanding",
+    "text": "1. Business Understanding\nPlano Nacional de Recursos Hídricos\nPlano Nacional de Recursos Hídricos (PNRH) is the main strategic planning instrument for water management in Brazil.\nPart of the National Water Resources Policy, guides the integrated action of institutions at the federal, state, and river basin levels.\nAligned with the Marco Legal do Saneamento, it sets a national guidelines for water management and use and was developed with the participation of government entities, committees, and civil society."
+  },
+  {
+    "objectID": "index.html#business-understanding-3",
+    "href": "index.html#business-understanding-3",
+    "title": "IDB Proof of Concept",
+    "section": "1. Business Understanding",
+    "text": "1. Business Understanding\nLiterature Review\nIn addition to the PNRH, a small sample of seven documents on the topic of water was selected, namely:\n\nOne report from Secretaria Nacional de Saneamento (SNS)\nThree reports from IDB\nOne report from World Bank\nAnd two scientific articles\n\nThree were reviewed for this version and the remaining four were mapped for future releases."
+  },
+  {
+    "objectID": "index.html#business-understanding-4",
+    "href": "index.html#business-understanding-4",
+    "title": "IDB Proof of Concept",
+    "section": "1. Business Understanding",
+    "text": "1. Business Understanding\nDeliverable 2: Literature Summary Table"
+  },
+  {
+    "objectID": "index.html#business-understanding-5",
+    "href": "index.html#business-understanding-5",
+    "title": "IDB Proof of Concept",
+    "section": "1. Business Understanding",
+    "text": "1. Business Understanding\nNext Release\n\nComplete the review of the four remaining documents.\nInclude additional bibliographic references.\nRefine the understanding of the project by clarifying aspects such as user definition, architecture improvements, etc."
+  },
+  {
+    "objectID": "index.html#data-understanding",
+    "href": "index.html#data-understanding",
+    "title": "IDB Proof of Concept",
+    "section": "2. Data Understanding",
+    "text": "2. Data Understanding\nTo ensure sufficient time to adequately address all deliverables, the PoC focused on Sistema Nacional de Informações sobre Saneamento (SNIS) dataset out of the two referenced in the ToR.\nDuring the initial analysis, an additional challenge was identified related to building historical series for Water and Sanitation data.\nIn 2024, a major change occurred in how these data are collected and made available, which directly affects comparability over time."
+  },
+  {
+    "objectID": "index.html#data-understanding-1",
+    "href": "index.html#data-understanding-1",
+    "title": "IDB Proof of Concept",
+    "section": "2. Data Understanding",
+    "text": "2. Data Understanding\nSNIS → SINISA\nIn 2024, SNIS becomes SINISA. In addition to the name, the way the data are collected and made available has also changed.\nSome references about this: official source, methodological changes and additional context on social media: 1, 2, 3, 4.\n\nSNIS data can be found on this public repository.\nSINISA data are available on the government’s official website."
+  },
+  {
+    "objectID": "index.html#data-understanding-2",
+    "href": "index.html#data-understanding-2",
+    "title": "IDB Proof of Concept",
+    "section": "2. Data Understanding",
+    "text": "2. Data Understanding\nGiven the points mentioned above, the selected dataset was\n\nData Source: SINISA (most recent data)\nScope: Water only (easily replicable for Sanitation)\nTerritorial Coverage: Municipal level (contains more information)\nReference Year: 2023 (the only available SINISA year)"
+  },
+  {
+    "objectID": "index.html#data-understanding-3",
+    "href": "index.html#data-understanding-3",
+    "title": "IDB Proof of Concept",
+    "section": "2. Data Understanding",
+    "text": "2. Data Understanding\nStep-by-step guide to obtaining the data on the SINISA website\n\nDownload and unzip the ZIP file.\nInside the ZIP file, there are three folders.\nThe dataset chosen for this PoC can be found at:\n\n\nFolder: Água - Base Municipal,\nFile: SINISA_AGUA_Informacoes_Gestao Tecnica Agua_Base Municipal_2023_V2.xlsx,\nSheet: Gestão Técnica de Água."
+  },
+  {
+    "objectID": "index.html#data-understanding-4",
+    "href": "index.html#data-understanding-4",
+    "title": "IDB Proof of Concept",
+    "section": "2. Data Understanding",
+    "text": "2. Data Understanding\n\n\nDataset description\nThis dataset has\n5,242 rows (municipalities) and\n87 columns\n\n\n\n\n\n\nImportant\n\n\nBrazil had 5,568 municipalities in 2023 according to IBGE;\nMeaning 326 (almost 6%) are missing from SINISA data.\n\n\n\n\nDataset issues (not exhaustive)\n\nSome numeric variables contained text in some rows. Were replaced with NA.\nSome variables that may be used as denominators in the indexes may have zero values. The index became NA."
+  },
+  {
+    "objectID": "index.html#data-understanding-5",
+    "href": "index.html#data-understanding-5",
+    "title": "IDB Proof of Concept",
+    "section": "2. Data Understanding",
+    "text": "2. Data Understanding\nVariable dictionary + statistics\n\nTextNumeric"
+  },
+  {
+    "objectID": "index.html#data-understanding-6",
+    "href": "index.html#data-understanding-6",
+    "title": "IDB Proof of Concept",
+    "section": "2. Data Understanding",
+    "text": "2. Data Understanding\nNext Release\nAdd with new data sources\n\nSINISA – Sanitation\nSNIS – data prior to 2023\nRegBR and others"
+  },
+  {
+    "objectID": "index.html#data-preparation",
+    "href": "index.html#data-preparation",
+    "title": "IDB Proof of Concept",
+    "section": "3. Data Preparation",
+    "text": "3. Data Preparation\nRepeated municipalities\n\n\nThe statistics table shows that although municipality names are repeated (4,995 unique values), there are no duplicated records in the dataset. The repeated names correspond to municipalities located in different states (UFs)."
+  },
+  {
+    "objectID": "index.html#data-preparation-1",
+    "href": "index.html#data-preparation-1",
+    "title": "IDB Proof of Concept",
+    "section": "3. Data Preparation",
+    "text": "3. Data Preparation\nMunicipality name validation\n\n\nMunicipality names in the SINISA dataset were validated against IBGE (source of truth). Some municipalities presented minor discrepancies, mostly involving accentuation or apostrophes.\nNo corrections were needed."
+  },
+  {
+    "objectID": "index.html#data-preparation-2",
+    "href": "index.html#data-preparation-2",
+    "title": "IDB Proof of Concept",
+    "section": "3. Data Preparation",
+    "text": "3. Data Preparation\nDeliverable 1: Database Integration (sample for visualization only)"
+  },
+  {
+    "objectID": "index.html#data-preparation-3",
+    "href": "index.html#data-preparation-3",
+    "title": "IDB Proof of Concept",
+    "section": "3. Data Preparation",
+    "text": "3. Data Preparation\nNext Release\n\nConsolidation of datasets from different sources (such as SNIS, RegBR, and others).\nImprovement of data cleaning / preprocessing.\nImprovement of data traceability.\nAlignment with IDB principles of transparency and accountability"
+  },
+  {
+    "objectID": "index.html#modeling",
+    "href": "index.html#modeling",
+    "title": "IDB Proof of Concept",
+    "section": "4. Modeling",
+    "text": "4. Modeling\nDefinitions\n16 indexes were defined based on the following criteria:\n\nRelevance to the Water theme.\nPotential to support public policy decision-making.\nAvailable variables in Sheet Gestão Técnica de Água.\nPossibility of verification/validation in Spreadsheet SINISA_AGUA_Indicadores_Base Municipal_2023_V2.xlsx (spreadsheet included in the ZIP file from the SINISA website.).\nInspiration from existing dashboard already developed by SINISA."
+  },
+  {
+    "objectID": "index.html#modeling-1",
+    "href": "index.html#modeling-1",
+    "title": "IDB Proof of Concept",
+    "section": "4. Modeling",
+    "text": "4. Modeling\n\n\nDefinitions"
+  },
+  {
+    "objectID": "index.html#modeling-2",
+    "href": "index.html#modeling-2",
+    "title": "IDB Proof of Concept",
+    "section": "4. Modeling",
+    "text": "4. Modeling\nCalculation logs\n\n\nThe index calculation function includes detailed logs to show what is happening during execution.\nSome indexes triggered exception rules, so certain records were not calculated to ensure data validity."
+  },
+  {
+    "objectID": "index.html#modeling-3",
+    "href": "index.html#modeling-3",
+    "title": "IDB Proof of Concept",
+    "section": "4. Modeling",
+    "text": "4. Modeling\nDeliverable 3: Index Construction (sample for visualization only)"
+  },
+  {
+    "objectID": "index.html#modeling-4",
+    "href": "index.html#modeling-4",
+    "title": "IDB Proof of Concept",
+    "section": "4. Modeling",
+    "text": "4. Modeling\nDeliverable 3: Descriptive Statistics (IAG0XXX)\n\nIAG0001IAG0002IAG0003\n\n\n\n\n\n\n\n\n\n\nIndex Description\n\n\nAtendimento da população total com rede de abastecimento de água\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nIndex Description\n\n\nAtendimento da população urbana com rede de abastecimento de água\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nIndex Description\n\n\nAtendimento da população rural com rede de abastecimento de água"
+  },
+  {
+    "objectID": "index.html#modeling-5",
+    "href": "index.html#modeling-5",
+    "title": "IDB Proof of Concept",
+    "section": "4. Modeling",
+    "text": "4. Modeling\nDeliverable 3: Descriptive Statistics (IAG2XXX)\n\nIAG2001IAG2002IAG2003IAG2010IAG2011IAG2012IAG2013IAG2016IAG2023\n\n\n\n\n\n\n\n\n\n\nIndex Description\n\n\nMicromedição de água em relação ao volume disponibilizado para distribuição\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nIndex Description\n\n\nMicromedição do volume de água consumido\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nIndex Description\n\n\nMacromedição do volume de água de entrada no sistema de distribuição\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nIndex Description\n\n\nConsumo de água em relação ao volume disponibilizado para distribuição\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nIndex Description\n\n\nVolume faturado de água em relação ao volume de entrada no sistema de distribuição\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nIndex Description\n\n\nPerdas de faturamento de água\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nIndex Description\n\n\nPerdas totais de água na distribuição\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nIndex Description\n\n\nIncidência de ligações de água setorizadas\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nIndex Description\n\n\nConsumo médio de energia elétrica no serviço de abastecimento de água"
+  },
+  {
+    "objectID": "index.html#modeling-6",
+    "href": "index.html#modeling-6",
+    "title": "IDB Proof of Concept",
+    "section": "4. Modeling",
+    "text": "4. Modeling\nDeliverable 3: Descriptive Statistics (IAG3XXX)\n\nIAG3001IAG3002IAG3003IAG3006\n\n\n\n\n\n\n\n\n\n\nIndex Description\n\n\nEconomias ativas de água atingidas por paralisações\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nIndex Description\n\n\nEconomias ativas de água atingidas por interrupções sistemáticas\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nIndex Description\n\n\nTempo médio de reparo de vazamentos de água\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nIndex Description\n\n\nIncidência de pedidos de ligações de água executados"
+  },
+  {
+    "objectID": "index.html#modeling-7",
+    "href": "index.html#modeling-7",
+    "title": "IDB Proof of Concept",
+    "section": "4. Modeling",
+    "text": "4. Modeling\nNext Release\n\nDevelopment of new indexes/indicators.\nAdd more logging inside the functions to capture additional execution details."
+  },
+  {
+    "objectID": "index.html#evaluation",
+    "href": "index.html#evaluation",
+    "title": "IDB Proof of Concept",
+    "section": "5. Evaluation",
+    "text": "5. Evaluation\nIndex Validation\n\n\n\nThe calculated indexes were validated against the same official indices by SINISA.\nThe validation metric was the difference between the indexes.\nSince the official data is reported with two decimal places, the absolute difference below 0.005 is non-significant."
+  },
+  {
+    "objectID": "index.html#deployment-dashboard",
+    "href": "index.html#deployment-dashboard",
+    "title": "IDB Proof of Concept",
+    "section": "6. Deployment — Dashboard",
+    "text": "6. Deployment — Dashboard\nDeliverable 4: Code\n\nThe project and documentation can be found in Github\nReproducibility and traceability: the entire process is fully reproducible follow instructions on README.\nTransparency through logging and monitoring: detailed logs enable auditing, rapid issue detection, and full visibility of data processing and indicator generation.\nClear documentation and structured deployment: deployment is supported by concise, well-organized documentation covering architecture, workflows, dependencies, and execution guidelines."
+  },
+  {
+    "objectID": "index.html#deployment",
+    "href": "index.html#deployment",
+    "title": "IDB Proof of Concept",
+    "section": "6. Deployment",
+    "text": "6. Deployment\nNext Release\nStructuring the project as an R package: consolidate analytical scripts, functions, and processing pipelines into a standardized R package, making the codes and tools publicly available to promote transparency, reuse and collaboration within the scientific community.\nDevelopment of an interactive dashboard: create a user-friendly platform to visualize indicators and key variables, enabling intuitive exploration, comparison, and interpretation of results by technical teams, decision-makers, and stakeholders."
+  },
+  {
+    "objectID": "index.html#next-steps",
+    "href": "index.html#next-steps",
+    "title": "IDB Proof of Concept",
+    "section": "Next Steps",
+    "text": "Next Steps"
+  },
+  {
+    "objectID": "index.html#roadmap-for-full-implementation",
+    "href": "index.html#roadmap-for-full-implementation",
+    "title": "IDB Proof of Concept",
+    "section": "Roadmap for full Implementation",
+    "text": "Roadmap for full Implementation\n\nStakeholder engagement and detailed requirement gathering.\n\nFull ingestion and processing pipeline for SNIS/SINISA and related sources.\n\nExpansion of the index framework and methodological documentation.\n\nAdvanced analytics (trends, benchmarking, forecasting).\n\nDeployment, governance model, and integration with IDB toolset.\n\nContinuous improvement, monitoring, and capacity building."
+  },
+  {
+    "objectID": "index.html#roadmap-for-full-implementation-1",
+    "href": "index.html#roadmap-for-full-implementation-1",
+    "title": "IDB Proof of Concept",
+    "section": "Roadmap for full Implementation",
+    "text": "Roadmap for full Implementation\nTask Planning"
+  },
+  {
+    "objectID": "index.html#final-remarks",
+    "href": "index.html#final-remarks",
+    "title": "IDB Proof of Concept",
+    "section": "Final Remarks",
+    "text": "Final Remarks"
+  },
+  {
+    "objectID": "index.html#final-remarks-1",
+    "href": "index.html#final-remarks-1",
+    "title": "IDB Proof of Concept",
+    "section": "Final Remarks",
+    "text": "Final Remarks\n\nThe PoC demonstrates:\n\nTechnical capability and data skills\n\nSector and institutional understanding\n\nAlignment with the Terms of Reference\n\n\nProvides a solid foundation to scale into a full IDB project\n\nReady to deepen and extend the work jointly with IDB teams"
+  },
+  {
+    "objectID": "index.html#thank-you",
+    "href": "index.html#thank-you",
+    "title": "IDB Proof of Concept",
+    "section": "Thank You",
+    "text": "Thank You\nContact\nd.miro1089@gmail.com\n\nLinkedIn"
+  }
+]

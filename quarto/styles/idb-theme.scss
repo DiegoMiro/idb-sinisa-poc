@@ -1,0 +1,200 @@
+/*-- scss:defaults --*/
+/* inspiration: https://pt.scribd.com/document/662239821/BID-Brand-Guidelines-Brand-book*/
+
+$bid-blue: #004e70;
+$bid-gray-dark: #3c3b3b;
+$bid-cyan: #009ade;
+$bid-yellow: #ffda00;
+$bid-green-dark: #308144;
+$bid-green-light: #8dba38;
+$bid-gray-light: #a6a6a8;
+
+$bg-light: #f5f7fa;
+
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700;800&display=swap");
+
+/*-- scss:rules --*/
+
+:root {
+  --r-main-font: "Open Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --r-heading-font: "Open Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --r-main-color: #{$bid-gray-dark};
+  --r-heading-color: #{$bid-blue};
+  --r-link-color: #{$bid-cyan};
+  --r-link-color-hover: #{$bid-blue};
+  --r-background-color: #ffffff;
+}
+
+/* Title slide inspired by BID covers (blue background + strong title) */
+.reveal .slides section:first-of-type {
+  background: linear-gradient(135deg, $bid-blue 65%, $bid-cyan);
+  color: #ffffff;
+  text-align: left;
+}
+
+.reveal .slides section:first-of-type h1,
+.reveal .slides section:first-of-type h2,
+.reveal .slides section:first-of-type h3 {
+  color: #ffffff;
+}
+
+/* General headings */
+.reveal h1 {
+  font-family: "Open Sans", sans-serif;
+  font-weight: 700;
+  font-size: 2em;
+  /* border-left: 6px solid $bid-cyan; */
+  padding-left: 12px;
+}
+
+.reveal h2 {
+  font-family: "Open Sans", sans-serif;
+  font-weight: 700;
+  font-size: 1.4em;
+  color: $bid-blue;
+}
+
+.reveal h3 {
+  font-family: "Open Sans", sans-serif;
+  font-weight: 300;
+  font-size: 1em;
+  color: $bid-blue;
+}
+
+/* Body */
+.reveal p {
+  font-family: "Open Sans", sans-serif;
+  font-size: 1em;
+  line-height: 1.5;
+}
+
+/* Lists */
+.reveal ul {
+  font-size: 1em;
+}
+
+.reveal ul li {
+  margin-bottom: 0.35em;
+}
+
+/* Section divider slides – styled like BID section openers
+   Use in QMD as: ## Title {.section-divider}
+*/
+.reveal .slides section.section-divider {
+  background: $bid-blue;
+  color: #ffffff;
+  display: flex !important;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.reveal .slides section.section-divider h2,
+.reveal .slides section.section-divider h1 {
+  color: #ffffff;
+  border-left: none;
+  font-size: 1em;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  padding-left: 60px;
+}
+
+/* Cyan bar, evoking the BID curve as a simple accent */
+.reveal .slides section.section-divider::before {
+  content: "";
+  position: absolute;
+  left: 60px;
+  width: 110px;
+  height: 4px;
+  background: $bid-cyan;
+  top: 40%;
+}
+
+/* Subtle background for normal slides */
+.reveal .slides section:not(.section-divider):not(:first-of-type) {
+  background-color: #ffffff;
+}
+
+/* Tables */
+.reveal table {
+  border-radius: 8px;
+  overflow: hidden;
+  border-collapse: collapse;
+  font-size: 0.95em;
+}
+
+.reveal thead {
+  background-color: $bid-blue;
+  color: #ffffff;
+}
+
+.reveal tbody tr:nth-child(even) {
+  background-color: $bg-light;
+}
+
+/* Code blocks */
+.reveal code,
+.reveal pre {
+  font-size: 0.85em;
+}
+
+/* Logo size */
+.reveal .slide-logo {
+  max-height: 30px !important;
+}
+
+/* Optional helper for two-column content */
+.columns {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+.columns .col {
+  min-width: 0;
+}
+
+.col-box {
+  border: 1px solid $bid-gray-dark;
+  border-radius: 8px;
+  padding: 1rem;
+  box-sizing: border-box;
+}
+
+.reveal .panel-tabset [role=tab] {
+  font-size: 20px;
+}
+
+.reactable-scroll {
+  overflow-y: auto;
+}
+
+/* header fixo do reactable (usa classes do react-table) */
+.reactable-scroll .rt-thead.-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: white;
+}
+
+.rt-tbody .rt-tr:hover .rt-td {
+  background-color: #fefce1 !important;
+}
+
+
+/* trying to fix highlight color woth sticky
+.reactable .rt-tbody .rt-tr.-highlight:hover {
+  background-color: #FEF9C3 !important;
+}
+
+.reactable .rt-tbody .rt-tr.-highlight:hover .rt-td {
+  background-color: #FEF9C3 !important;
+}
+
+.rt-tbody .rt-tr.-highlight.-striped:hover .rt-td,
+.rt-tbody .rt-tr.-highlight:hover .rt-td {
+  background-color: #FEF9C3 !important;
+}
+*/
+
+

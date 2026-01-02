@@ -1,0 +1,88 @@
+Column,Name,Category,Description,Unit
+1,cod_IBGE,Dados Gerais,Codigo do IBGE,NA
+2,Macrorregião,Dados Gerais,Macrorregião,NA
+3,Município,Dados Gerais,Município,NA
+4,UF,Dados Gerais,UF,NA
+5,Capital,Dados Gerais,Capital,NA
+6,RM / RIDE,Dados Gerais,RM / RIDE,NA
+7,CAD0002,Dados Gerais,Natureza Juridica,NA
+8,CAD0003,Dados Gerais,Abrangência,NA
+9,CAD0005,Dados Gerais,Nome do Prestador,NA
+10,CAD0006,Dados Gerais,Sigla,NA
+11,DFE0001,Dados Gerais,População Total Residente,Habitantes
+12,DFE0002,Dados Gerais,População Urbana Residente,Habitantes
+13,DFE0003,Dados Gerais,População Rural Residente,Habitantes
+14,CAD2001,Atendimento e Delegação,Área de atuação do prestador no município,NA
+15,CAD2002,Atendimento e Delegação,Forma de prestação,NA
+16,CAD2002A,Atendimento e Delegação,NA,NA
+17,CAD2003,Atendimento e Delegação,Atividades abrangidas para Abastecimento de Água,NA
+18,CAD2004,Atendimento e Delegação,Instrumento de delegação da prestação,NA
+19,CAD2004A,Atendimento e Delegação,NA,NA
+20,CAD2005,Atendimento e Delegação,Data de início da prestação do serviço,NA
+21,CAD2006,Atendimento e Delegação,Data de término da prestação do serviço,NA
+22,GTA0001,População atendida,População urbana atendida com rede de abastecimento de água,Habitantes
+23,GTA0002,População atendida,População rural atendida com rede de abastecimento de água,Habitantes
+24,GTA0003,Ligações de água,Quantidade de ligações ativas de água,Ligações
+25,GTA0004,Ligações de água,Quantidade de ligações ativas de água micromedidas,Ligações
+26,GTA0005,Ligações de água,Quantidade de ligações inativas de água,Ligações
+27,GTA0006,Ligações de água,Quantidade de ligações totais setorizadas de água,Ligações
+28,GTA0007,Ligações de água,Conexões factíveis de água,Imóveis
+29,GTA0008,Economias de água,Quantidade de economias urbanas ativas de água,economias
+30,GTA0009,Economias de água,Quantidade de economias urbanas residenciais ativas de água,economias
+31,GTA0010,Economias de água,Quantidade de economias ativas de água micromedidas,economias
+32,GTA0011,Economias de água,Quantidade de economias residenciais ativas de água micromedidas,economias
+33,GTA0012,Economias de água,Quantidade de economias inativas de água,economias
+34,GTA0013,Economias de água,Quantidade de economias urbanas residenciais inativas de água,economias
+35,GTA0014,Economias de água,Quantidade de economias factíveis de água,economias
+36,GTA0015,Economias de água,Quantidade de economias rurais ativas de água,economias
+37,GTA0016,Economias de água,Quantidade de economias rurais residenciais ativas de água,economias
+38,GTA0017,Economias de água,Quantidade de economias rurais residenciais inativas de água,economias
+39,GTA0018,Economias de água,Quantidade de domicílios na área de abrangência do Prestador do serviço de abastecimento de água,economias
+40,GTA0999,Economias de água,"Observações, esclarecimentos ou sugestões",NA
+41,GTA1001,Operacional de Água,Volume de água produzido,1.000 m³/ano
+42,GTA1002,Operacional de Água,Volume de água tratada em ETAs,1.000 m³/ano
+43,GTA1003,Operacional de Água,Volume de água tratada por simples desinfecção,1.000 m³/ano
+44,GTA1004,Operacional de Água,Volume de água fluoretada,1.000 m³/ano
+45,GTA1005,Operacional de Água,Volume de água macromedido,1.000 m³/ano
+46,GTA1009,Operacional de Água,Volume de água tratada importado,1.000 m³/ano
+47,GTA1013,Operacional de Água,Volume de água bruta importado distribuída sem tratamento,1.000 m³/ano
+48,GTA1014,Operacional de Água,Volume de entrada no subsistema de distribuição de água,1.000 m³/ano
+49,GTA1101,Operacional de Água,Extensão de adutoras e subadutoras de água bruta,Km
+50,GTA1102,Operacional de Água,Extensão de rede de distribuição de água,Km
+51,GTA1103,Operacional de Água,Extensão média dos ramais prediais da rede de distribuição de água,m
+52,GTA1203,Operacional de Água,Volume de água tratada exportado,1.000 m³/ano
+53,GTA1204,Operacional de Água,Volume de água de uso operacional,1.000 m³/ano
+54,GTA1205,Operacional de Água,Volume de água de uso emergencial,1.000 m³/ano
+55,GTA1206,Operacional de Água,Volume de água de uso social,1.000 m³/ano
+56,GTA1207,Operacional de Água,Volume de água autorizado não faturado,1.000 m³/ano
+57,GTA1208,Operacional de Água,Capacidade útil total de reservação na rede de distribuição,m³
+58,GTA1209,Operacional de Água,Volume consumido nas economias residenciais ativas de água,1.000 m³/ano
+59,GTA1210,Operacional de Água,Volume consumido nas economias não residenciais ativas de água,1.000 m³/ano
+60,GTA1211,Operacional de Água,Volume de água consumido,1.000 m³/ano
+61,GTA1212,Operacional de Água,Volume micromedido nas economias residenciais ativas de água,1.000 m³/ano
+62,GTA1213,Operacional de Água,Volume micromedido nas economias não residenciais ativas de água,1.000 m³/ano
+63,GTA1214,Operacional de Água,Volume de água micromedido,1.000 m³/ano
+64,GTA1215,Operacional de Água,Volume de água submedido por imprecisão,1.000 m³/ano
+65,GTA1216,Operacional de Água,Volume de consumo de água não autorizado,1.000 m³/ano
+66,GTA1217,Operacional de Água,Volume de perdas aparentes de água,1.000 m³/ano
+67,GTA1218,Operacional de Água,Volume de perdas reais de água,1.000 m³/ano
+68,GTA1219,Operacional de Água,Volume de água faturado nas economias residenciais ativas de água,1.000 m³/ano
+69,GTA1220,Operacional de Água,Volume de água exportado isento de faturamento,1.000 m³/ano
+70,GTA1221,Operacional de Água,Volume total de água faturado,1.000 m³/ano
+71,GTA1301,Operacional de Água,Consumo total de energia elétrica no serviço de abastecimento água,1.000 kwh/ano
+72,GTA1999,Operacional de Água,"Observações, esclarecimentos ou sugestões",NA
+73,GTA3001,Paralisações e intermitências,Quantidade de paralisações com falta de água,paralisações/ano
+74,GTA3002,Paralisações e intermitências,Quantidade de economias ativas atingidas por paralisações,economias/ano
+75,GTA3003,Paralisações e intermitências,"Quantidade de interrupções sistemáticas, resultando em racionamento ou rodízio",interrupções/ano
+76,GTA3004,Paralisações e intermitências,Principais motivos de interrupções sistemáticas,NA
+77,GTA3004A,Paralisações e intermitências,NA,NA
+78,GTA3005,Paralisações e intermitências,Quantidade de economias ativas atingidas por interrupções sistemáticas,economias/ano
+79,GTA3006,Paralisações e intermitências,Quantidade de dias que o sistema ficou em colapso,dias/ano
+80,GTA3101,Atendimento aos usuários,Quantidade de reclamações recebidas por falta de água,reclamações/ano
+81,GTA3102,Atendimento aos usuários,Quantidade de reclamações recebidas sobre vazamentos no sistema de distribuição,reclamações/ano
+82,GTA3103,Atendimento aos usuários,Quantidade de vazamentos de água reparados no sistema de distribuição,ocorrências/ano
+83,GTA3104,Atendimento aos usuários,Tempo total de reparos de vazamentos,horas/ano
+84,GTA3106,Atendimento aos usuários,Quantidade de pedidos de ligação de água recebidos,pedidos/ano
+85,GTA3107,Atendimento aos usuários,Quantidade de pedidos de ligação de água executados,ligações/ano
+86,GTA3109,Atendimento aos usuários,Existe ouvidoria ou central de atendimento ao cidadão para recebimento de reclamações ou manifestações sobre os serviços de abastecimento de água?,NA
+87,GTA3999,Atendimento aos usuários,"Observações, esclarecimentos ou sugestões",NA

@@ -1,0 +1,2327 @@
+---
+title: "<br>IDB Proof of Concept"
+subtitle: "<br>Brazilian Water and Sanitation<br>Index Framework"
+output-file: index
+author: "<br><br>Diego Miro"
+format:
+  revealjs:
+    mathjax: true
+    
+    width: 1280
+    height: 720
+    margin: 0.1
+    minScale: 0.5
+    maxScale: 1.5
+    
+    theme: styles/idb-theme.scss
+    slide-number: true
+    transition: fade
+    
+    toc: true
+    toc-depth: 2
+    
+    #smaller: true
+    #footer: "Inter-American Development Bank — SINISA PoC"
+    background-transition: fade
+    logo: images/BID-logo-fondo-blanco.png
+    
+---
+
+```{r}
+library(tidyverse)
+library(here)
+library(usethis)
+library(htmltools)
+library(reactable)
+library(skimr)
+library(highcharter)
+library(scales)
+```
+
+```{r}
+options(scales.decimal.mark = ".")
+options(scales.big.mark = ",")
+```
+
+```{r}
+"src" %>%
+  here() %>%
+  list.files(
+    pattern = "\\.R$",
+    full.names = TRUE
+  ) %>%
+  walk(
+    ~ {
+      ui_done(str_c("Carregando: ", basename(.x)))
+      source(.x)
+    }
+  )
+
+```
+
+
+```{r}
+df_description_cols <- read_csv("../data/processed/description_cols.csv")
+df_gestao_tecnica_agua <- read_csv("../data/processed/gestao_tecnica_agua.csv")
+df_index_calculation <- read_csv("../data/processed/index_calculation.csv")
+
+df_statistics_numeric_cols <- read_csv("../data/processed/statistics_numeric_cols.csv")
+df_statistics_character_cols <- read_csv("../data/processed/statistics_character_cols.csv")
+
+df_repeated_municipalities_names <- read_csv("../data/processed/repeated_municipalities_names.csv")
+
+df_diff_municipalities <- readr::read_csv("../data/processed/diff_municipalities.csv") |>
+  rename(
+    cod_ibge   = cod_IBGE,
+    mun_sinisa = `Município__SINISA`,
+    mun_ibge   = `Município__IBGE`
+  )
+
+df_log_exception_rules <- read_csv("../data/processed/log_exception_rules.csv")
+df_index_calculated <- read_csv("../data/processed/index_calculated.csv")
+
+df_fivenum_index <- read_csv("../data/processed/fivenum_index.csv")
+
+df_stats_boxplot <- read_csv("../data/processed/stats_boxplot.csv")
+
+df_difference_stats_boxplot <- read_csv("../data/processed/difference_stats_boxplot.csv")
+
+df_literature_matrix <- read_csv("../data/processed/literature_matrix.csv")
+
+```
+
+
+```{r}
+# Categorize the discrepancy type
+## Next release: needs to be changed to accept more than one classification.
+classify_diff <- function(a, b) {
+  if (a == b) return("Sem diferença")
+  
+  a_no_punct <- gsub("[[:punct:]]", "", a)
+  b_no_punct <- gsub("[[:punct:]]", "", b)
+  if (a_no_punct == b_no_punct) return("Pontuação")
+  
+  a_no_acc <- stringi::stri_trans_general(a, "Latin-ASCII")
+  b_no_acc <- stringi::stri_trans_general(b, "Latin-ASCII")
+  if (a_no_acc == b_no_acc) return("Acentuação")
+  
+  "Ortografia"
+}
+
+
+# GitHub-style diff: longest common prefix + longest common suffix
+## Next release: needs to be made more flexible.
+##               currently works well for the specific scenarios in this dataset.
+highlight_diff <- function(text, ref, diff_color = "#FECACA") {
+  # handle NA safely
+  if (is.na(text) || is.na(ref)) {
+    safe_text <- ifelse(is.na(text), "", text)
+    return(htmltools::HTML(htmltools::htmlEscape(safe_text)))
+  }
+  
+  # split into character units (Unicode-safe)
+  chars1 <- stringi::stri_split_boundaries(text, type = "character")[[1]]
+  chars2 <- stringi::stri_split_boundaries(ref,  type = "character")[[1]]
+  
+  n1 <- length(chars1)
+  n2 <- length(chars2)
+  
+  # longest common prefix
+  i <- 1
+  while (i <= n1 && i <= n2 && identical(chars1[i], chars2[i])) {
+    i <- i + 1
+  }
+  
+  # longest common suffix (without crossing the prefix)
+  j1 <- n1
+  j2 <- n2
+  while (j1 >= i && j2 >= i && identical(chars1[j1], chars2[j2])) {
+    j1 <- j1 - 1
+    j2 <- j2 - 1
+  }
+  
+  # if there is no difference (strings are identical)
+  if (i > n1 && n1 == n2) {
+    return(htmltools::HTML(htmltools::htmlEscape(text)))
+  }
+  
+  # build spans: highlight only the middle segment [i, j1] in the text
+  spans <- purrr::map_chr(seq_len(n1), function(k) {
+    ch <- chars1[k]
+    if (!is.na(ch) && k >= i && k <= j1) {
+      as.character(
+        tags$span(
+          style = paste0(
+            "background-color:", diff_color, ";",
+            "padding:0 1px;",
+            "border-radius:2px;"
+          ),
+          htmltools::htmlEscape(ch)
+        )
+      )
+    } else {
+      htmltools::htmlEscape(ch)
+    }
+  })
+  
+  htmltools::HTML(paste0(spans, collapse = ""))
+}
+
+
+# icon-based rating (circles) for degree of difference
+dot_rating <- function(value, max_value = 5) {
+  dots <- lapply(seq_len(max_value), function(i) {
+    filled <- i <= value
+    span(
+      style = paste(
+        "display:inline-block;",
+        "margin-right:2px;",
+        "width:9px;height:9px;",
+        "border-radius:50%;",
+        "background-color:",
+        if (filled) "#004e70" else "#e5e7eb", ";"
+      )
+    )
+  })
+  
+  div(
+    dots,
+    paste0(" ", value)
+  )
+}
+
+
+badge_type <- function(tipo) {
+  # background color (badge)
+  bg <- dplyr::case_when(
+    tipo == "Pontuação"   ~ "hsl(230, 70%, 90%)",
+    tipo == "Acentuação"  ~ "hsl(225, 40%, 91%)",
+    tipo == "Ortografia"  ~ "hsl(30, 97%, 90%)",
+    TRUE                  ~ "hsl(210, 10%, 92%)"
+  )
+  
+  # font color
+  fg <- dplyr::case_when(
+    tipo == "Pontuação"   ~ "hsl(230, 45%, 30%)",
+    tipo == "Acentuação"  ~ "hsl(225, 35%, 28%)",
+    tipo == "Ortografia"  ~ "hsl(30, 60%, 30%)",
+    TRUE                  ~ "hsl(210, 10%, 30%)"
+  )
+  
+  htmltools::tags$span(
+    tipo,
+    style = paste(
+      "display:inline-block;",
+      "padding:0.125rem 0.75rem;",
+      "border-radius:15px;",
+      "font-weight:600;",
+      "font-size:0.75rem;",
+      "background:", bg, ";",
+      "color:", fg, ";"
+    )
+  )
+}
+```
+
+```{r}
+to_html_frac <- function(x) {
+  x <- str_trim(x)
+  
+  vapply(x, function(s) {
+    # 1) Caso especial: ((...)/(...)) * 100
+    if (str_detect(s, "^\\(.+\\)\\s*/\\s*\\(.+\\)\\s*\\*\\s*100\\s*$")) {
+      m <- str_match(s, "^\\((.+)\\)\\s*/\\s*\\((.+)\\)\\s*\\*\\s*100\\s*$")
+      num <- m[2]
+      den <- m[3]
+      
+      return(
+        sprintf(
+          "<span class='frac'><span class='num'>(%s)</span><span class='den'>(%s)</span></span> * 100",
+          num, den
+        )
+      )
+    }
+    
+    # 2) Caso geral: algo do tipo A/B
+    if (str_detect(s, "^.+/.+$")) {
+      return(
+        str_replace(
+          s,
+          "^(.+?)/(.+)$",
+          "<span class='frac'><span class='num'>\\1</span><span class='den'>\\2</span></span>"
+        )
+      )
+    }
+    
+    # 3) Se não encaixar em nada, devolve como está
+    s
+  }, FUN.VALUE = character(1))
+}
+
+```
+
+
+
+
+## Project Context {.section-divider}
+
+------------------------------------------------------------------------
+
+## Project Context {.unlisted}
+The primary goal of this Proof of Concept (PoC) is to demonstrate the knowledge and skills required for the Assistant Research Consultant position, as described in the LinkedIn [posting](https://www.linkedin.com/feed/update/urn:li:activity:7406724357156282368/){target="_blank"}.\
+
+**Value Proposition of the PoC**
+
+- Validate feasibility of the approach proposed in the Terms of Reference (ToR).
+- Provide an initial foundation for a scalable analytical solution.
+- Develop a R package with a ready-to-use dataset, index calculation, and dashboard.
+- Deliver a transparent and reproducible workflow.
+
+------------------------------------------------------------------------
+
+## Project Context {.unlisted}
+
+
+Even though this is a reduced version of the full project, the PoC still covers all four deliverables proposed in the ToR.
+
+1.  **Database Integration**: Consolidated, cleaned, and harmonized integrated database.
+2.  **Literature Review**: Excel matrix of all reviewed sources and a written report summarizing main findings of the literature.
+3.  **Index Construction & Descriptive Statistics**: Development of composite indicators into an index, including methodological note and descriptive statistics.
+4.  **Code**: Fully reproducible, well-documented R code and scripts.
+
+
+
+
+
+
+
+## Methodology {.section-divider}
+
+------------------------------------------------------------------------
+
+## Methodological Framework: CRISP-DM {.unlisted}
+
+:::::::: columns
+::: {.column width="70%"}
+CRISP-DM (Cross-Industry Standard Process for Data Mining) is a widely adopted, practical framework that **structures** analytical and data science projects from conception to delivery.
+
+-   **Connect** analytical work to decision-making.\
+-   Useful when **clarity** about the steps of an analytical project is important.\
+-   Improves methodological **reproducibility** and supports the development of well-structured, modular **documentation**.
+:::
+
+:::::: {.column .col-box width="30%"}
+::: {style="font-size: 60%; text-align:center;"}
+Flowchart
+:::
+
+::: {style="text-align: center;"}
+```{mermaid}
+flowchart TD
+  A[Business Understanding] --> B[Data Understanding]
+  B --> A
+  
+  B --> C[Data Preparation]
+  C --> D[Modeling]
+  D --> C
+  
+  D --> E[Evaluation]
+  E -. feedback .-> A
+  
+  E --> F[Deployment]
+```
+:::
+
+::: {style="font-size: 30%;"}
+Shearer, C. (2000). The CRISP-DM model: the new blueprint for data mining. *Journal of Data Warehousing, 5* (4), 13–22.
+
+:::
+::::::
+::::::::
+
+------------------------------------------------------------------------
+
+## Mapping deliverables to the CRISP-DM {.unlisted}
+### Some necessary adjustments
+
+::::: columns
+::: {.column width="50%"}
+- Deliverables 1 and 2 had to be reordered in the workflow.
+- Deliverable Code and phase Deployment are not exactly the same, but they were considered equivalent.
+
+
+:::
+::: {.column width="50%"}
+```{r}
+tribble(
+  ~"id_deliverable", ~"Deliverable",           ~"id_crisp", ~"CRISP-DM Phase",
+  2,                 "Literature Review",      1,           "Business Understanding",
+  2,                 "Literature Review",      2,           "Data Understanding",
+  1,                 "Database Integration",   2,           "Data Understanding",
+  1,                 "Database Integration",   3,           "Data Preparation",
+  3,                 "Index Construction",     4,           "Modeling",
+  3,                 "Descriptive Statistics", 5,           "Evaluation",
+  4,                 "Code",                   6,           "Deployment",
+) %>%
+  reactable(
+    columns = list(
+      id_deliverable = colDef(
+        name = "",
+        width = 50
+      ),
+      id_crisp = colDef(
+        name = "",
+        width = 50
+      )
+    ),
+    theme = reactableTheme(
+      style = list(fontSize = "16px"),
+      headerStyle = list(fontSize = "16px", whiteSpace = "nowrap"),
+      tableStyle = list(
+        paddingRight  = "8px",
+        paddingBottom = "8px"
+      )
+    )
+  )
+```
+:::
+:::::
+
+
+------------------------------------------------------------------------
+
+## Project stages {.section-divider}
+
+------------------------------------------------------------------------
+
+## 1. Business Understanding {.unlisted}
+
+### Inter-American Development Bank
+
+The Inter-American Development Bank (IDB) is the main source of development financing for Latin America and the Caribbean, dedicated to improving the quality of life of millions of people through financial and technical support to governments and development partners [(IDB website)](https://www.iadb.org/en/who-we-are/about-us){target="_blank"}.
+
+------------------------------------------------------------------------
+
+## 1. Business Understanding {.unlisted}
+
+### Inter-American Development Bank
+
+IDB is the leading multilateral development institution in Latin America and the Caribbean, providing financing, technical assistance, and innovation to support economic growth, reduce poverty and inequality, strengthen institutions, improve public services, and enhance resilience for societies across the region [(cfr.org)](https://www.cfr.org/backgrounder/what-does-inter-american-development-bank-do){target="_blank"}.
+
+------------------------------------------------------------------------
+
+## 1. Business Understanding {.unlisted}
+
+### Plano Nacional de Recursos Hídricos
+[Plano Nacional de Recursos Hídricos](https://www.gov.br/mdr/pt-br/assuntos/seguranca-hidrica/plano-nacional-de-recursos-hidricos-1){target="_blank"} (PNRH) is the main strategic planning instrument for water management in Brazil.
+
+Part of the National Water Resources Policy, guides the integrated action of institutions at the federal, state, and river basin levels.
+
+Aligned with the [Marco Legal do Saneamento](https://www.gov.br/cidades/pt-br/assuntos/saneamento/marco-legal-do-saneamento){target="_blank"}, it sets a [national guidelines](https://www.gov.br/ana/pt-br/assuntos/gestao-das-aguas/planos-de-recursos-hidricos/plano-nacional-de-recursos-hidricos-pnrh){target="_blank"} for water management and use and was [developed](https://www.gov.br/mdr/pt-br/assuntos/seguranca-hidrica/plano-nacional-de-recursos-hidricos-1/pnrh_2022_para_baixar_e_imprimir.pdf){target="_blank"} with the participation of government entities, committees, and civil society.
+
+------------------------------------------------------------------------
+
+## 1. Business Understanding {.unlisted}
+
+### Literature Review
+
+In addition to the PNRH, a small sample of seven documents on the topic of water was selected, namely:
+
+- One report from Secretaria Nacional de Saneamento (SNS)
+- Three reports from IDB
+- One report from World Bank
+- And two scientific articles
+
+Three were reviewed for this version and the remaining four were mapped for future releases.
+
+------------------------------------------------------------------------
+
+## 1. Business Understanding {.unlisted}
+### Deliverable 2: Literature Summary Table
+
+::: reactable-scroll
+```{r}
+index_read <- df_literature_matrix %>%
+  rowid_to_column() %>%
+  filter(read == "yes") %>%
+  pull(rowid)
+
+df_literature_matrix %>%  
+  reactable(
+    height = 500,
+    pagination = FALSE,
+    striped = TRUE,
+    compact = TRUE,
+    highlight = TRUE,
+    
+    theme = reactableTheme(
+      style = list(fontSize = "16px"),
+      headerStyle = list(fontSize = "16px", whiteSpace = "nowrap"),
+      tableStyle = list(
+        paddingRight  = "8px",
+        paddingBottom = "8px"
+      )
+    ),
+    
+    columns = list(
+      doc_type = colDef(show = FALSE),
+      access = colDef(show = FALSE),
+      sector = colDef(show = FALSE),
+      region = colDef(show = FALSE),
+      data_type = colDef(show = FALSE),
+      methods = colDef(show = FALSE),
+      indicators = colDef(show = FALSE),
+      research_question = colDef(show = FALSE),
+      main_findings = colDef(show = FALSE),
+      policy_implications = colDef(show = FALSE),
+      limitations = colDef(show = FALSE),
+      project_use = colDef(show = FALSE),
+      related_studies = colDef(show = FALSE),
+      
+      id_ref = colDef(
+        name = "ID_ref",
+        minWidth = 80,
+        align = "center",
+        headerClass = "id-col",
+        cell = function(value) {
+          div(
+            style = paste(
+              "display:inline-block;",
+              "padding:2px 8px;",
+              "border-radius:999px;",
+              "font-weight:600;",
+              "font-size:0.75rem;",
+              "background:#eef2ff;",
+              "color:#1d2a5b;"
+            ),
+            value
+          )
+        }
+      ),
+      
+      read = colDef(
+        name = "Read?",
+        minWidth = 90,
+        align = "center",
+        cell = function(value) {
+          label <- ifelse(value == "yes", "Read", "Not read")
+          
+          bg <- case_when(
+            value == "yes" ~ "#e3f5e5",
+            value == "no"  ~ "#fde4e4",
+            TRUE           ~ "#f0f0f0"
+          )
+          
+          col <- case_when(
+            value == "yes" ~ "#216d34",
+            value == "no"  ~ "#a12c2c",
+            TRUE           ~ "#555555"
+          )
+          
+          div(
+            style = paste(
+              "display:inline-block;",
+              "padding:2px 10px;",
+              "border-radius:999px;",
+              "font-size:0.75rem;",
+              "font-weight:600;",
+              "background:", bg, ";",
+              "color:", col, ";"
+            ),
+            label
+          )
+        }
+      ),
+      
+      authors = colDef(
+        name = "Authors",
+        minWidth = 230
+      ),
+      
+      source = colDef(
+        name = "Source",
+        minWidth = 250
+      ),
+      
+      year = colDef(
+        name = "Year",
+        align = "center",
+        width = 70
+      ),
+      
+      title = colDef(
+        name = "Title",
+        minWidth = 450
+      ),
+
+      link = colDef(
+        name = "Link",
+        minWidth = 90,
+        align = "center",
+        cell = function(value) {
+          if (is.na(value) || value == "") return("")
+          tags$a(
+            href = value,
+            target = "_blank",
+            rel = "noopener noreferrer",
+            # pode trocar por ícone, se quiser
+            "Open",
+            style = paste(
+              "text-decoration:none;",
+              "font-size:0.8rem;",
+              "font-weight:600;",
+              "border-radius:999px;",
+              "padding:2px 10px;",
+              "border:1px solid #e0e0e0;"
+            )
+          )
+        }
+      )
+    ),
+    
+    # detalhes ao clicar na linha
+    details = function(index) {
+      
+      if (index %in% index_read) {
+        
+        row <- df_literature_matrix[index, ]
+        div(
+          style = paste(
+            "padding:8px 16px;",
+            "border-top:1px solid #e0e0e0;",
+            "background:#fcfcfc;"
+          ),
+          div(
+            style = "margin-bottom:4px;",
+            tags$b("Access: "), row$access
+          ),
+          div(
+            style = "margin-bottom:4px;",
+            tags$b("Type: "), row$doc_type
+          ),
+          div(
+            style = "margin-bottom:4px;",
+            tags$b("Sector: "), row$sector
+          ),
+          div(
+            style = "margin-bottom:4px;",
+            tags$b("Region: "), row$region
+          ),
+          div(
+            style = "margin-bottom:4px;",
+            tags$b("Data Type: "), row$data_type
+          ),
+          div(
+            style = "margin-bottom:4px;",
+            tags$b("Methods: "), row$methods
+          ),
+          
+          div(
+            style = "margin-bottom:4px;",
+            tags$b("Indicators: "), row$indicators
+          ),
+          div(
+            style = "margin-bottom:4px;",
+            tags$b("Research Question: "), row$research_question
+          ),
+          div(
+            style = "margin-bottom:4px;",
+            tags$b("Main Findings: "), row$main_findings
+          ),
+          div(
+            style = "margin-bottom:4px;",
+            tags$b("Policy Implications: "), row$policy_implications
+          ),
+          div(
+            style = "margin-bottom:4px;",
+            tags$b("Limitations: "), row$limitations
+          ),
+          div(
+            style = "margin-bottom:4px;",
+            tags$b("Project Use: "), row$project_use
+          ),
+          div(
+            style = "margin-bottom:4px;",
+            tags$b("Related Studies: "), row$related_studies
+          )
+        )
+      }
+    }
+  )
+```
+:::
+
+------------------------------------------------------------------------
+
+## 1. Business Understanding {.unlisted}
+
+### Next Release
+
+- Complete the review of the four remaining documents.
+- Include additional bibliographic references.
+- Refine the understanding of the project by clarifying aspects such as user definition, architecture improvements, etc.
+
+------------------------------------------------------------------------
+
+## 2. Data Understanding {.unlisted}
+
+To ensure **sufficient time** to adequately address all deliverables, the PoC focused on Sistema Nacional de Informações sobre Saneamento (SNIS) dataset out of the two referenced in the ToR.
+
+
+During the initial analysis, an additional challenge was identified related to building historical series for Water and Sanitation data.
+
+In 2024, a **major change** occurred in how these data are collected and made available, which directly affects comparability over time.
+
+------------------------------------------------------------------------
+
+## 2. Data Understanding {.unlisted}
+
+### SNIS [→]{style="color: #004e70;"} SINISA
+
+In 2024, SNIS becomes SINISA. In addition to the name, the way the data are collected and made available has also changed.
+
+Some references about this: [official source](https://www.gov.br/cidades/pt-br/acesso-a-informacao/acoes-e-programas/saneamento/sinisa#:~:text=A%20partir%20de%202024%2C%20o,Lei%20n%C2%BA%2014.026%2F2020){target="_blank"}, [methodological changes](https://tratabrasil.org.br/wp-content/uploads/2025/07/Versao-Final-do-Estudo-da-GO-Associados-Trata-Brasil-SNIS-SINISA_Rio-corrigido-3.pdf){target="_blank"} and additional context on social media: [1](https://www.youtube.com/shorts/XuWGJl--U_k){target="_blank"}, [2](https://www.youtube.com/watch?v=Rlq4EXWfKb0){target="_blank"}, [3](https://www.instagram.com/reel/DKw9kbEMvdN/){target="_blank"}, [4](https://www.youtube.com/watch?v=7BflV2sOy7U){target="_blank"}.
+
+- SNIS data can be found on this public [repository](https://basedosdados.org/search?q=SNIS){target="_blank"}.
+- SINISA data are available on the government’s official [website](https://www.gov.br/cidades/pt-br/acesso-a-informacao/acoes-e-programas/saneamento/sinisa/resultados-sinisa){target="_blank"}.
+
+------------------------------------------------------------------------
+
+## 2. Data Understanding {.unlisted}
+
+### Given the points mentioned above, the selected dataset was
+
+-   **Data Source**: SINISA (most recent data)
+-   **Scope**: Water only (easily replicable for Sanitation)
+-   **Territorial Coverage**: Municipal level (contains more information)
+-   **Reference Year**: 2023 (the only available SINISA year)
+
+------------------------------------------------------------------------
+
+## 2. Data Understanding {.unlisted}
+
+### Step-by-step guide to obtaining the data on the SINISA website
+
+1.  [Download](https://www.gov.br/cidades/pt-br/acesso-a-informacao/acoes-e-programas/saneamento/sinisa/resultados-sinisa){target="_blank"} and unzip the ZIP file.
+2.  Inside the ZIP file, there are three folders.
+3.  The dataset chosen for this PoC can be found at:
+  - Folder: `Água - Base Municipal`,
+  - File: `SINISA_AGUA_Informacoes_Gestao Tecnica Agua_Base Municipal_2023_V2.xlsx`,
+  - Sheet: `Gestão Técnica de Água`.
+
+------------------------------------------------------------------------
+
+## 2. Data Understanding {.unlisted}
+
+::::: columns
+::: {.column width="50%"}
+### Dataset description
+
+This dataset has\
+5,242 rows (municipalities) and\
+87 columns
+
+::: callout-important
+## Important
+Brazil had 5,568 municipalities in 2023 according to [IBGE](https://agenciadenoticias.ibge.gov.br/agencia-noticias/2012-agencia-de-noticias/noticias/42251-ibge-divulga-atualizacao-anual-das-estruturas-territoriais-do-pais){target="_blank"};  
+Meaning 326 (almost 6%) are missing from SINISA data.
+:::
+:::
+
+::: {.column width="50%"}
+### Dataset issues (not exhaustive)
+
+- Some numeric variables contained text in some rows. <span style="font-style: italic; font-weight: 300;">Were replaced with NA.</span>
+
+- Some variables that may be used as denominators in the indexes may have zero values. <span style="font-style: italic; font-weight: 300;">The index became NA.</span>
+:::
+:::::
+
+------------------------------------------------------------------------
+
+## 2. Data Understanding {.unlisted}
+
+### Variable dictionary + statistics
+
+::: {.panel-tabset }
+
+#### Text
+::: reactable-scroll
+```{r}
+df_statistics_character_cols %>%
+  rename(Name = Column) %>%
+  inner_join(x = df_description_cols) %>%
+  reactable(
+    height = 450,
+    pagination = FALSE,
+    striped = TRUE,
+    compact = TRUE,
+    highlight = TRUE,
+    columns = list(
+      Column = colDef(
+        width = 80
+      ),
+      Name = colDef(
+        width = 120
+      ),
+      Category = colDef(
+        width = 120
+      ),
+      Description = colDef(
+        width = 300
+      ),
+      Unit = colDef(
+        width = 150,
+        style = list(
+          borderRight = "1px solid #e0e0e0"
+        )
+      ),
+      n_missing = colDef(
+        name = "Missings",
+        width = 100,
+        format = colFormat(digits = 0, separators = TRUE)
+      ),
+      n_valores_unicos = colDef(
+        name = "Unique Values",
+        format = colFormat(digits = 0, separators = TRUE)
+      ),
+      min_str_length = colDef(
+        name = "Min. text length",
+        format = colFormat(digits = 0, separators = TRUE)
+      ),
+      max_str_length = colDef(
+        name = "Max. text length",
+        format = colFormat(digits = 0, separators = TRUE)
+      )
+    ),
+    theme = reactableTheme(
+      style = list(fontSize = "16px"),
+      headerStyle = list(fontSize = "16px", whiteSpace = "nowrap"),
+      tableStyle = list(
+        paddingRight  = "8px",
+        paddingBottom = "8px"
+      )
+    )
+  )
+```
+:::
+
+#### Numeric
+::: reactable-scroll
+```{r}
+df_statistics_numeric_cols %>%
+  rename(Name = Column) %>%
+  inner_join(x = df_description_cols) %>%
+  reactable(
+    height = 450,
+    pagination = FALSE,
+    striped = TRUE,
+    compact = TRUE,
+    highlight = TRUE,
+    columns = list(
+      Column = colDef(
+        width = 80
+      ),
+      Name = colDef(
+        width = 120
+      ),
+      Category = colDef(
+        width = 120
+      ),
+      Description = colDef(
+        width = 300
+      ),
+      Unit = colDef(
+        width = 150,
+        style = list(
+          borderRight = "1px solid #e0e0e0"
+        )
+      ),
+      n_missing = colDef(
+        name = "Missings",
+        width = 100,
+        format = colFormat(digits = 0, separators = TRUE)
+      ),
+      min = colDef(
+        name = "Min.",
+        format = colFormat(digits = 0, separators = TRUE)
+      ),
+      max = colDef(
+        name = "Max.",
+        format = colFormat(digits = 0, separators = TRUE)
+      ),
+      mean = colDef(
+        name = "Mean",
+        format = colFormat(digits = 0, separators = TRUE)
+      ),
+      cv = colDef(
+        name = "Coeff. of Variation",
+        format = colFormat(digits = 2, separators = TRUE)
+      )
+    ),
+    theme = reactableTheme(
+      style = list(fontSize = "16px"),
+      headerStyle = list(fontSize = "16px", whiteSpace = "nowrap"),
+      tableStyle = list(
+        paddingRight  = "8px",
+        paddingBottom = "8px"
+      )
+    )
+  )
+```
+:::
+
+:::
+
+------------------------------------------------------------------------
+
+## 2. Data Understanding {.unlisted}
+
+### Next Release
+
+Add with new data sources
+
+-   SINISA – Sanitation
+-   SNIS – data prior to 2023
+-   RegBR and others
+
+------------------------------------------------------------------------
+
+## 3. Data Preparation {.unlisted}
+
+### Repeated municipalities
+
+:::::::: columns
+
+::: {.column width="50%"}
+The statistics table shows that although municipality names are repeated (4,995 unique values), there are **no duplicated records** in the dataset. The repeated names correspond to municipalities located in **different states (UFs)**.
+:::
+
+::: {.column width="50%"}
+::: reactable-scroll
+```{r}
+tbl_repeated_municipalities_names <- df_repeated_municipalities_names %>%
+  nest(.by = Município) %>%
+  rowid_to_column() %>%
+  unnest(cols = c(data)) %>%
+  mutate(
+    group_break = Município != lag(Município, default = first(Município)),
+    Município = case_when(
+      Município == lag(Município) ~ NA_character_,
+      TRUE ~ Município
+    ),
+    rowid = case_when(
+      rowid == lag(rowid) ~ NA_integer_,
+      TRUE ~ rowid
+    )
+  ) %>%
+  select(rowid, Município, cod_IBGE, Macrorregião, UF, everything())
+  
+
+tbl_repeated_municipalities_names %>%
+  reactable(
+    height = 550,
+    pagination = FALSE,
+    striped = TRUE,
+    compact = TRUE,
+    highlight = TRUE,
+    sortable = FALSE,
+    rowStyle = function(index) {
+      # index is 1-based
+      if (tbl_repeated_municipalities_names$group_break[index]) {
+        list(
+          borderTop = "2px solid #9ca3af"
+        )
+      }
+    },
+    columns = list(
+      rowid = colDef(
+        name = "",
+        width = 50
+      ),
+      Município = colDef(
+        name = "Name"
+      ),
+      cod_IBGE = colDef(
+        width = 90
+      ),
+      Macrorregião = colDef(
+        width = 150
+      ),
+      UF = colDef(
+        width = 50
+      ),
+      repeated = colDef(
+        show = FALSE
+      ),
+      group_break = colDef(
+        show = FALSE
+      )
+    ),
+    theme = reactableTheme(
+      style = list(fontSize = "16px"),
+      headerStyle = list(fontSize = "16px", whiteSpace = "nowrap"),
+      tableStyle = list(
+        paddingRight  = "8px",
+        paddingBottom = "8px"
+      )
+    )
+  )
+```
+:::
+:::
+::::::::
+
+------------------------------------------------------------------------
+
+## 3. Data Preparation {.unlisted}
+### Municipality name validation
+
+:::::::: columns
+
+::: {.column width="50%"}
+Municipality names in the SINISA dataset were validated against IBGE (source of truth). Some municipalities presented **minor discrepancies**, mostly involving accentuation or apostrophes.
+
+<span style="font-style: italic; font-weight: 300;">No corrections were needed.</span>
+
+:::
+
+::: {.column width="50%"}
+
+::: reactable-scroll
+```{r}
+df_diff_municipalities %>%
+  mutate(
+    diff_level = stringdist::stringdist(mun_sinisa, mun_ibge, method = "lv"),
+    diff_type       = purrr::map2_chr(mun_sinisa, mun_ibge, classify_diff),
+    diff_type_badge = purrr::map_chr(diff_type, ~as.character(badge_type(.x))),
+    
+    sinisa_diff_html = purrr::map2_chr(
+      mun_sinisa, mun_ibge,
+      ~as.character(highlight_diff(.x, .y, diff_color = "#FECACA"))
+    ),
+    ibge_diff_html   = purrr::map2_chr(
+      mun_ibge, mun_sinisa,
+      ~as.character(highlight_diff(.x, .y, diff_color = "#BFDBFE"))
+    )
+  ) %>% reactable(
+    columns = list(
+      
+      cod_ibge = colDef(
+        name = "cod_IBGE",
+        align = "center",
+        width = 90,
+        sticky = "left",
+        style = list(
+          borderRight = "1px solid #e0e0e0"
+        )
+      ),
+      
+      mun_sinisa = colDef(show = FALSE),
+      mun_ibge   = colDef(show = FALSE),
+      
+      diff_level = colDef(
+        name = "Count",
+        align = "center",
+        width = 100,
+        cell = function(value) dot_rating(value)
+      ),
+      
+      diff_type = colDef(show = FALSE),
+      diff_type_badge = colDef(
+        name = "Type",
+        align = "center",
+        html = TRUE,
+        width = 100
+      ),
+      
+      sinisa_diff_html = colDef(
+        name = "SINISA",
+        html = TRUE,
+        width = 220,
+        style = list(
+          borderLeft = "1px solid #e0e0e0"
+        )
+      ),
+      ibge_diff_html = colDef(
+        name = "IBGE",
+        html = TRUE,
+        width = 220
+      )
+      
+    ),
+    columnGroups = list(
+      colGroup(
+        name = "Município",
+        columns = c("sinisa_diff_html", "ibge_diff_html")
+      ),
+      colGroup(
+        name = "Difference",
+        columns = c("diff_level", "diff_type_badge")
+      )
+    ),
+    height = 550,
+    pagination = FALSE,
+    highlight = TRUE,
+    striped = TRUE,
+    compact = TRUE,
+    theme = reactableTheme(
+      style = list(fontSize = "16px"),
+      headerStyle = list(fontSize = "16px", whiteSpace = "nowrap"),
+      tableStyle = list(
+        paddingRight  = "8px",
+        paddingBottom = "8px"
+      )
+    )
+  )
+
+```
+:::
+:::
+::::::::
+
+------------------------------------------------------------------------
+
+## 3. Data Preparation {.unlisted}
+
+### Deliverable 1: Database Integration (sample for visualization only)
+
+::: reactable-scroll
+```{r}
+df_gestao_tecnica_agua %>%
+  filter( # campos com menos caracteres. facilitam a visualizacao no espaco pequeno
+    str_detect(CAD0002, ";", negate = TRUE),
+    str_length(CAD0005) <= 40,
+    str_length(CAD2001) <= 20,
+    is.na(GTA0999),
+    is.na(GTA1999),
+    is.na(GTA3999),
+  ) %>%
+  group_by(UF) %>%
+  slice_sample(n = 2) %>%
+  ungroup() %>%
+  arrange(cod_IBGE) %>%
+  reactable(
+    height = 500,
+    pagination = FALSE,
+    striped = TRUE,
+    compact = TRUE,
+    highlight = TRUE,
+    columns = list(
+      Macrorregião = colDef(
+        style = list(whiteSpace = "nowrap"),
+        minWidth = 120
+      ),
+      Município = colDef(
+        minWidth = 150
+      )
+    ),
+    theme = reactableTheme(
+      style = list(fontSize = "16px"),
+      headerStyle = list(fontSize = "16px", whiteSpace = "nowrap"),
+      tableStyle = list(
+        paddingRight  = "8px",
+        paddingBottom = "8px"
+      )
+    )
+  )
+```
+:::
+
+
+------------------------------------------------------------------------
+
+## 3. Data Preparation {.unlisted}
+
+### Next Release
+
+- Consolidation of datasets from different sources (such as SNIS, RegBR, and others).
+- Improvement of data cleaning / preprocessing.
+- Improvement of data traceability.
+- Alignment with IDB principles of transparency and accountability
+
+------------------------------------------------------------------------
+
+## 4. Modeling {.unlisted}
+### Definitions
+16 indexes were defined based on the following criteria:
+
+- Relevance to the Water theme.
+- Potential to support public policy decision-making.
+- Available variables in Sheet `Gestão Técnica de Água`.
+- Possibility of verification/validation in Spreadsheet `SINISA_AGUA_Indicadores_Base Municipal_2023_V2.xlsx` (*spreadsheet included in the ZIP file from the SINISA website.*).
+- Inspiration from existing [dashboard](https://indicadores-sinisa-2025.cidades.gov.br/dashboard?modulo=agua){target="_blank"} already developed by SINISA.
+
+------------------------------------------------------------------------
+
+## 4. Modeling {.unlisted}
+:::::::: columns
+
+::: {.column width="70%"}
+
+### Definitions
+::: reactable-scroll
+```{r}
+df_index_calculation %>%
+  rename_with(
+    ~ .x %>% str_remove("index_") %>% str_to_sentence()
+  ) %>%
+  reactable(
+    height = 550,
+    # width = 1500,
+    pagination = FALSE,
+    striped = TRUE,
+    compact = TRUE,
+    highlight = TRUE,
+    columns = list(
+      Name = colDef(
+        width = 80,
+        sticky = "left",
+        style = list(
+          borderRight = "1px solid #e0e0e0"
+        )
+      ),
+      Description = colDef(
+        width = 200
+      ),
+      Formula = colDef(
+        width = 200
+      ),
+      Dependence_description = colDef(
+        name = "Index Dependence",
+        width = 300,
+        html = TRUE
+      ),
+      Rules = colDef(
+        width = 200
+      )
+    ),
+    theme = reactableTheme(
+      style = list(fontSize = "16px"),
+      headerStyle = list(fontSize = "16px", whiteSpace = "nowrap"),
+      tableStyle = list(
+        paddingRight  = "8px",
+        paddingBottom = "8px"
+      )
+    )
+  )
+```
+:::
+:::
+::: {.column width="30%"}
+```{r}
+df_sankey <- df_index_calculation %>%
+  select(index_name, index_dependence_description) %>%
+  mutate(
+    index_dependence = index_dependence_description %>%
+      str_split("<br>")
+  ) %>%
+  select(-index_dependence_description) %>%
+  unnest(index_dependence) %>%
+  mutate(
+    index_dependence = index_dependence %>%
+      str_sub(1, 7)
+  )
+
+# 2. Links (Index -> Variable) ----
+links <- df_sankey %>%
+  count(index_name, index_dependence, name = "weight") %>%
+  rename(
+    from = index_name,
+    to   = index_dependence
+  )
+
+# 3. Nodes with colors
+nodes_tbl <- tibble(
+  id = unique(c(links$from, links$to))
+) %>%
+  mutate(
+    group = dplyr::case_when(
+      startsWith(id, "IAG00") ~ "IAG00",
+      startsWith(id, "IAG20") ~ "IAG20",
+      startsWith(id, "IAG30") ~ "IAG30",
+      TRUE                    ~ "VAR"
+    ),
+    color = dplyr::case_when(
+      group == "IAG00" ~ "#0ea5e9",
+      group == "IAG20" ~ "#22c55e",
+      group == "IAG30" ~ "#f97316",
+      group == "VAR"   ~ "#94a3b8"
+    )
+  )
+
+
+nodes_list <- nodes_tbl %>%
+  transmute(id, color) %>%
+  pmap(function(id, color) list(id = id, color = color))
+
+# 4. Sankey highcharter
+highchart(width = 300, height = 650) %>%
+  hc_add_dependency("modules/sankey") %>%
+  hc_add_series(
+    type  = "sankey",
+    data  = links,
+    hcaes(from = from, to = to, weight = weight),
+    nodes = nodes_list,
+    name  = "Index → Variable dependency"
+  ) %>%
+  hc_title(text = "Index → Dependency") %>%
+  hc_tooltip(
+    pointFormat = "<b>{point.fromNode.name}</b> → <b>{point.toNode.name}</b><br/>Count: {point.weight}"
+  )
+```
+:::
+::::::::
+
+------------------------------------------------------------------------
+
+## 4. Modeling {.unlisted}
+### Calculation logs
+
+:::::::: columns
+
+::: {.column width="50%"}
+The index calculation function includes detailed logs to show what is happening during execution.
+
+Some indexes triggered exception rules, so certain records were not calculated to ensure data validity.
+:::
+
+::: {.column width="50%"}
+::: reactable-scroll
+```{r}
+df_log_exception_rules %>%
+  mutate(
+    index_name = log %>%
+      str_extract("IAG\\d{4}"),
+    rows_na = log %>%
+      str_extract("\\d{1,} row\\(s\\)") %>%
+      str_remove(" row\\(s\\)") %>%
+      as.integer(),
+    log = log %>%
+      str_remove_all(
+        "^.*\\[IDB_INDEX_V1\\]\\s*"
+      )
+  ) %>%
+  filter(!is.na(index_name)) %>%
+  select(index_name, rows_na, log) %>%
+  group_by(index_name) %>%
+  summarise(
+    rows_na = max(rows_na, na.rm = TRUE),
+    log = str_c(log, collapse = "<br>")
+  ) %>%
+  ungroup() %>%
+  mutate(rows_na = ifelse(rows_na == -Inf, NA_real_, rows_na)) %>%
+  reactable(
+    height = 550,
+    pagination = FALSE,
+    striped = TRUE,
+    compact = TRUE,
+    highlight = TRUE,
+    columns = list(
+      index_name = colDef(
+        name = "Index",
+        width = 90,
+        sticky = "left",
+        style = list(
+          borderRight = "1px solid #e0e0e0"
+        )
+      ),
+      rows_na = colDef(
+        name = "Exceptions",
+        width = 120,
+        na = "",
+        cell = function(value) {
+          if (is.na(value) || value == 0) return("")
+          tags$span(
+            style = paste0(
+              "display:inline-block; padding:2px 8px; border-radius:6px;",
+              "font-weight:600; background:#ffe0b2; color:#bf360c;"
+            ),
+            value
+          )
+        }
+      ),
+      log = colDef(
+        name = "Logs",
+        html = TRUE,
+        width = 800
+      )
+    ),
+    theme = reactableTheme(
+      style = list(fontSize = "16px"),
+      headerStyle = list(fontSize = "16px", whiteSpace = "nowrap"),
+      tableStyle = list(
+        paddingRight  = "8px",
+        paddingBottom = "8px"
+      )
+    )
+  )
+  
+```
+:::
+:::
+
+::::::::
+
+
+
+------------------------------------------------------------------------
+
+## 4. Modeling {.unlisted}
+### Deliverable 3: Index Construction (sample for visualization only)
+
+::: reactable-scroll
+```{r}
+
+cols_iag <- df_index_calculated %>%
+  names() %>%
+  keep(startsWith, "IAG")
+
+descriptions <- df_index_calculation %>%
+  filter(index_name %in% cols_iag) %>%
+  select(index_name, index_description) %>%
+  deframe()
+
+
+cols_def <- cols_iag %>%
+  set_names() %>%
+  map(\(col) {
+    description <- descriptions[[col]]
+    # se não tiver fórmula, não põe tooltip pra evitar erro
+    header_content <- if (!is.null(description) && nzchar(description)) {
+      div(title = description, col)
+    } else {
+      col
+    }
+
+    colDef(
+      name   = col,
+      width = 100,
+      header = header_content,
+      format = colFormat(digits = 2, separators = TRUE)
+    )
+  })
+
+cols_def$cod_IBGE <- colDef(
+  name = "cod_IBGE",
+  align = "center",
+  width = 90,
+  sticky = "left",
+  style = list(
+    borderRight = "1px solid #e0e0e0"
+  )
+)
+
+df_index_calculated %>%
+  slice_sample(n = 100) %>%
+  reactable(
+    columns = cols_def,
+    height = 550,
+    pagination = FALSE,
+    striped = TRUE,
+    compact = TRUE,
+    highlight = TRUE,
+    theme = reactableTheme(
+      style = list(fontSize = "16px"),
+      headerStyle = list(fontSize = "16px", whiteSpace = "nowrap"),
+      tableStyle = list(
+        paddingRight  = "8px",
+        paddingBottom = "8px"
+      )
+    )
+  )
+```
+:::
+
+------------------------------------------------------------------------
+
+## 4. Modeling {.unlisted}
+### Deliverable 3: Descriptive Statistics (IAG0XXX)
+
+::: {.panel-tabset }
+
+#### IAG0001
+:::::::: columns
+::: {.column width="50%"}
+
+::: callout-note
+### Index Description
+```{r, results="asis"}
+df_index_calculation %>%
+  filter(index_name == "IAG0001") %>%
+  pull(index_description) %>%
+  cat()
+```
+:::
+
+:::
+
+::: {.column width="50%"}
+::: reactable-scroll
+```{r}
+df_fivenum_index %>%
+  filter(index_name == "IAG0001") %>%
+  select(-index_name) %>%
+  rct_fivenum()
+```
+:::
+:::
+::::::::
+
+#### IAG0002
+:::::::: columns
+::: {.column width="50%"}
+
+::: callout-note
+### Index Description
+```{r, results="asis"}
+df_index_calculation %>%
+  filter(index_name == "IAG0002") %>%
+  pull(index_description) %>%
+  cat()
+```
+:::
+
+
+:::
+
+::: {.column width="50%"}
+::: reactable-scroll
+```{r}
+df_fivenum_index %>%
+  filter(index_name == "IAG0002") %>%
+  select(-index_name) %>%
+  rct_fivenum()
+```
+:::
+:::
+::::::::
+
+#### IAG0003
+:::::::: columns
+::: {.column width="50%"}
+
+::: callout-note
+### Index Description
+```{r, results="asis"}
+df_index_calculation %>%
+  filter(index_name == "IAG0003") %>%
+  pull(index_description) %>%
+  cat()
+```
+:::
+
+
+:::
+
+::: {.column width="50%"}
+::: reactable-scroll
+```{r}
+df_fivenum_index %>%
+  filter(index_name == "IAG0003") %>%
+  select(-index_name) %>%
+  rct_fivenum()
+```
+:::
+:::
+::::::::
+:::
+
+
+
+
+------------------------------------------------------------------------
+
+## 4. Modeling {.unlisted}
+### Deliverable 3: Descriptive Statistics (IAG2XXX)
+
+::: {.panel-tabset }
+
+#### IAG2001
+:::::::: columns
+::: {.column width="50%"}
+
+::: callout-note
+### Index Description
+```{r, results="asis"}
+df_index_calculation %>%
+  filter(index_name == "IAG2001") %>%
+  pull(index_description) %>%
+  cat()
+```
+:::
+
+
+:::
+
+::: {.column width="50%"}
+::: reactable-scroll
+```{r}
+df_fivenum_index %>%
+  filter(index_name == "IAG2001") %>%
+  select(-index_name) %>%
+  rct_fivenum()
+```
+:::
+:::
+::::::::
+
+#### IAG2002
+:::::::: columns
+::: {.column width="50%"}
+
+::: callout-note
+### Index Description
+```{r, results="asis"}
+df_index_calculation %>%
+  filter(index_name == "IAG2002") %>%
+  pull(index_description) %>%
+  cat()
+```
+:::
+
+:::
+
+::: {.column width="50%"}
+::: reactable-scroll
+```{r}
+df_fivenum_index %>%
+  filter(index_name == "IAG2002") %>%
+  select(-index_name) %>%
+  rct_fivenum()
+```
+:::
+:::
+::::::::
+
+#### IAG2003
+:::::::: columns
+::: {.column width="50%"}
+
+::: callout-note
+### Index Description
+```{r, results="asis"}
+df_index_calculation %>%
+  filter(index_name == "IAG2003") %>%
+  pull(index_description) %>%
+  cat()
+```
+:::
+
+
+:::
+
+::: {.column width="50%"}
+::: reactable-scroll
+```{r}
+df_fivenum_index %>%
+  filter(index_name == "IAG2003") %>%
+  select(-index_name) %>%
+  rct_fivenum()
+```
+:::
+:::
+::::::::
+
+#### IAG2010
+:::::::: columns
+::: {.column width="50%"}
+
+::: callout-note
+### Index Description
+```{r, results="asis"}
+df_index_calculation %>%
+  filter(index_name == "IAG2010") %>%
+  pull(index_description) %>%
+  cat()
+```
+:::
+
+
+:::
+
+::: {.column width="50%"}
+::: reactable-scroll
+```{r}
+df_fivenum_index %>%
+  filter(index_name == "IAG2010") %>%
+  select(-index_name) %>%
+  rct_fivenum()
+```
+:::
+:::
+::::::::
+
+#### IAG2011
+:::::::: columns
+::: {.column width="50%"}
+
+::: callout-note
+### Index Description
+```{r, results="asis"}
+df_index_calculation %>%
+  filter(index_name == "IAG2011") %>%
+  pull(index_description) %>%
+  cat()
+```
+:::
+
+
+:::
+
+::: {.column width="50%"}
+::: reactable-scroll
+```{r}
+df_fivenum_index %>%
+  filter(index_name == "IAG2011") %>%
+  select(-index_name) %>%
+  rct_fivenum()
+```
+:::
+:::
+::::::::
+
+#### IAG2012
+:::::::: columns
+::: {.column width="50%"}
+
+::: callout-note
+### Index Description
+```{r, results="asis"}
+df_index_calculation %>%
+  filter(index_name == "IAG2012") %>%
+  pull(index_description) %>%
+  cat()
+```
+:::
+
+
+:::
+
+::: {.column width="50%"}
+::: reactable-scroll
+```{r}
+df_fivenum_index %>%
+  filter(index_name == "IAG2012") %>%
+  select(-index_name) %>%
+  rct_fivenum()
+```
+:::
+:::
+::::::::
+
+#### IAG2013
+:::::::: columns
+::: {.column width="50%"}
+
+::: callout-note
+### Index Description
+```{r, results="asis"}
+df_index_calculation %>%
+  filter(index_name == "IAG2013") %>%
+  pull(index_description) %>%
+  cat()
+```
+:::
+
+
+:::
+
+::: {.column width="50%"}
+::: reactable-scroll
+```{r}
+df_fivenum_index %>%
+  filter(index_name == "IAG2013") %>%
+  select(-index_name) %>%
+  rct_fivenum()
+```
+:::
+:::
+::::::::
+
+#### IAG2016
+:::::::: columns
+::: {.column width="50%"}
+
+::: callout-note
+### Index Description
+```{r, results="asis"}
+df_index_calculation %>%
+  filter(index_name == "IAG2016") %>%
+  pull(index_description) %>%
+  cat()
+```
+:::
+
+
+:::
+
+::: {.column width="50%"}
+::: reactable-scroll
+```{r}
+df_fivenum_index %>%
+  filter(index_name == "IAG2016") %>%
+  select(-index_name) %>%
+  rct_fivenum()
+```
+:::
+:::
+::::::::
+
+#### IAG2023
+:::::::: columns
+::: {.column width="50%"}
+
+::: callout-note
+### Index Description
+```{r, results="asis"}
+df_index_calculation %>%
+  filter(index_name == "IAG2023") %>%
+  pull(index_description) %>%
+  cat()
+```
+:::
+
+
+:::
+
+::: {.column width="50%"}
+::: reactable-scroll
+```{r}
+df_fivenum_index %>%
+  filter(index_name == "IAG2023") %>%
+  select(-index_name) %>%
+  rct_fivenum()
+```
+:::
+:::
+::::::::
+:::
+
+------------------------------------------------------------------------
+
+## 4. Modeling {.unlisted}
+### Deliverable 3: Descriptive Statistics (IAG3XXX)
+
+::: {.panel-tabset }
+
+#### IAG3001
+:::::::: columns
+::: {.column width="50%"}
+
+::: callout-note
+### Index Description
+```{r, results="asis"}
+df_index_calculation %>%
+  filter(index_name == "IAG3001") %>%
+  pull(index_description) %>%
+  cat()
+```
+:::
+
+
+:::
+
+::: {.column width="50%"}
+::: reactable-scroll
+```{r}
+df_fivenum_index %>%
+  filter(index_name == "IAG3001") %>%
+  select(-index_name) %>%
+  rct_fivenum()
+```
+:::
+:::
+::::::::
+
+#### IAG3002
+:::::::: columns
+::: {.column width="50%"}
+
+::: callout-note
+### Index Description
+```{r, results="asis"}
+df_index_calculation %>%
+  filter(index_name == "IAG3002") %>%
+  pull(index_description) %>%
+  cat()
+```
+:::
+
+
+:::
+
+::: {.column width="50%"}
+::: reactable-scroll
+```{r}
+df_fivenum_index %>%
+  filter(index_name == "IAG3002") %>%
+  select(-index_name) %>%
+  rct_fivenum()
+```
+:::
+:::
+::::::::
+
+#### IAG3003
+:::::::: columns
+::: {.column width="50%"}
+
+::: callout-note
+### Index Description
+```{r, results="asis"}
+df_index_calculation %>%
+  filter(index_name == "IAG3003") %>%
+  pull(index_description) %>%
+  cat()
+```
+:::
+
+
+:::
+
+::: {.column width="50%"}
+::: reactable-scroll
+```{r}
+df_fivenum_index %>%
+  filter(index_name == "IAG3003") %>%
+  select(-index_name) %>%
+  rct_fivenum()
+```
+:::
+:::
+::::::::
+
+#### IAG3006
+:::::::: columns
+::: {.column width="50%"}
+
+::: callout-note
+### Index Description
+```{r, results="asis"}
+df_index_calculation %>%
+  filter(index_name == "IAG3006") %>%
+  pull(index_description) %>%
+  cat()
+```
+:::
+
+
+:::
+
+::: {.column width="50%"}
+::: reactable-scroll
+```{r}
+df_fivenum_index %>%
+  filter(index_name == "IAG3006") %>%
+  select(-index_name) %>%
+  rct_fivenum()
+```
+:::
+:::
+::::::::
+
+:::
+
+
+------------------------------------------------------------------------
+
+## 4. Modeling {.unlisted}
+### Next Release
+
+- Development of new indexes/indicators.
+- Add more logging inside the functions to capture additional execution details.
+
+------------------------------------------------------------------------
+
+## 5. Evaluation {.unlisted}
+### Index Validation
+:::::::: columns
+
+::: {.column width="50%"}
+
+- The **calculated** indexes were validated against the same **official** indices by SINISA.
+
+- The validation metric was the difference between the indexes.
+
+- Since the official data is reported with two decimal places, the absolute difference below 0.005 is non-significant.
+
+:::
+
+::: {.column width="50%"}
+```{r}
+df_boxplot <- df_difference_stats_boxplot %>%
+  mutate(
+    data = pmap(
+      list(name, low, q1, median, q3, high, n),
+      ~ list(
+        name   = ..1,
+        low    = ..2,
+        q1     = ..3,
+        median = ..4,
+        q3     = ..5,
+        high   = ..6,
+        n      = ..7
+      )
+    )
+  ) %>%
+  summarise(data = list(data)) %>%
+  mutate(
+    name = "Diff",
+    id = NA,
+    type = "boxplot"
+  ) %>%
+  select(name, data, id, type)
+
+cats <- df_difference_stats_boxplot %>%
+  pull(name)
+
+bands <- map(
+  seq_along(cats) - 1,
+  \(x) list(
+    from  = x - 0.5,
+    to    = x + 0.5,
+    color = ifelse(x %% 2 == 0, "#f5f5f5", "#ffffff")
+  )
+)
+
+highchart(width = 600, height = 550) %>%
+  hc_add_series_list(df_boxplot) %>%
+  hc_chart(inverted = TRUE) %>%
+  hc_xAxis(
+    title      = list(text = "Index"),
+    categories = cats,
+    plotBands  = bands
+  ) %>%
+  hc_yAxis(title = list(text = "Difference = Calculated - Official")) %>%
+  hc_title(text = "Difference by Index") %>%
+  hc_legend(enabled = FALSE) %>%
+  hc_plotOptions(
+    boxplot = list(
+      fillColor   = "#009ade",
+      color       = "#004e70",
+      medianColor = "#004e70",
+      lineWidth   = 1.5
+    )
+  ) %>%
+  hc_tooltip(
+    useHTML = TRUE,
+    shared = FALSE,
+    formatter = JS("
+    function () {
+      var p   = this.point;
+      var key = p.name || this.key || '';
+
+      return `
+        <div style='font-weight:bold; font-size:13px; margin-bottom:6px;'>
+          ${key}
+        </div>
+
+        <table style='border-collapse:collapse;'>
+          <tr>
+            <td style='padding:4px 8px; font-weight:bold;'>Min</td>
+            <td style='padding:4px 8px;'>
+              ${Highcharts.numberFormat(p.low, 4)}
+            </td>
+          </tr>
+          <tr>
+            <td style='padding:4px 8px; font-weight:bold;'>Q1</td>
+            <td style='padding:4px 8px;'>
+              ${Highcharts.numberFormat(p.q1, 4)}
+            </td>
+          </tr>
+          <tr style='font-weight:bold;'>
+            <td style='padding:4px 8px; color:#004e70;'>Median</td>
+            <td style='padding:4px 8px; color:#004e70;'>
+              ${Highcharts.numberFormat(p.median, 4)}
+            </td>
+          </tr>
+          <tr>
+            <td style='padding:4px 8px; font-weight:bold;'>Q3</td>
+            <td style='padding:4px 8px;'>
+              ${Highcharts.numberFormat(p.q3, 4)}
+            </td>
+          </tr>
+          <tr>
+            <td style='padding:4px 8px; font-weight:bold;'>Max</td>
+            <td style='padding:4px 8px;'>
+              ${Highcharts.numberFormat(p.high, 4)}
+            </td>
+          </tr>
+        </table>
+      `;
+    }
+  ")
+  )
+```
+
+:::
+::::::::
+------------------------------------------------------------------------
+
+## 6. Deployment — Dashboard {.unlisted}
+### Deliverable 4: Code
+
+- The project and documentation can be found in [Github](https://github.com/DiegoMiro/idb-sinisa-poc){target="_blank"}
+
+- **Reproducibility and traceability**: the entire process is fully reproducible follow instructions on README.
+
+- **Transparency through logging and monitoring**: detailed logs enable auditing, rapid issue detection, and full visibility of data processing and indicator generation.
+
+- **Clear documentation and structured deployment**: deployment is supported by concise, well-organized documentation covering architecture, workflows, dependencies, and execution guidelines.
+
+------------------------------------------------------------------------
+
+## 6. Deployment {.unlisted}
+
+### Next Release
+
+Structuring the project as an **R package**: consolidate analytical scripts, functions, and processing pipelines into a standardized R package, making the codes and tools publicly available to promote transparency, reuse and collaboration within the scientific community.
+
+Development of an interactive **dashboard**: create a user-friendly platform to visualize indicators and key variables, enabling intuitive exploration, comparison, and interpretation of results by technical teams, decision-makers, and stakeholders.
+
+
+------------------------------------------------------------------------
+
+## Next Steps {.section-divider}
+
+------------------------------------------------------------------------
+
+## Roadmap for full Implementation {.unlisted}
+
+1.  Stakeholder engagement and detailed requirement gathering.\
+2.  Full ingestion and processing pipeline for SNIS/SINISA and related sources.\
+3.  Expansion of the index framework and methodological documentation.\
+4.  Advanced analytics (trends, benchmarking, forecasting).\
+5.  Deployment, governance model, and integration with IDB toolset.\
+6.  Continuous improvement, monitoring, and capacity building.
+
+------------------------------------------------------------------------
+
+## Roadmap for full Implementation {.unlisted}
+### Task Planning
+
+```{r}
+library(tibble)
+library(dplyr)
+library(purrr)
+
+datetime_to_ts <- function(x) {
+  as.numeric(as.POSIXct(x, tz = "UTC")) * 1000
+}
+
+project_df <- tribble(
+  ~id,                   ~name,                              ~parent,      ~start,         ~end,           ~assignee,                 ~dependency,                          ~completed_amount,
+  # Phases
+  "planning",            "Planning",                         NA,           "2026-04-01",   "2026-04-15",   NA,                        NA,                                    NA,
+  "execution",           "Execution",                        NA,           "2026-04-11",   "2026-06-30",   NA,                        NA,                                    NA,
+  "closure",             "Closure",                          NA,           "2026-07-01",   "2026-07-15",   NA,                        NA,                                    NA,
+  
+  # Planning
+  "kickoff",             "Kick-off & scope",                 "planning",   "2026-04-01",   "2026-04-15",   "Consultant + IDB",    NA,                                    0.1,
+  "requirements",        "Refine research questions",        "planning",   "2026-04-04",   "2026-04-10",   "Consultant",              "kickoff",                             0.0,
+  
+  # Execution
+  "literature_review",   "Literature review",                "execution",  "2026-04-11",   "2026-05-05",   "Consultant",              "requirements",                        0.1,
+  "data_integration",    "Data integration & cleaning",      "execution",  "2026-04-20",   "2026-05-31",   "Consultant",              "requirements",                        0.1,
+  "index_construction",  "Index construction & validation",  "execution",  "2026-05-20",   "2026-06-20",   "Consultant",              "data_integration,literature_review",  0.1,
+  "code_package",        "R code package & documentation",   "execution",  "2026-06-10",   "2026-06-30",   "Consultant",              "index_construction",                  0.1,
+  
+  # Closure
+  "handover",            "Handover & training",              "closure",    "2026-07-01",   "2026-07-10",   "Consultant + IDB",    "code_package",                        0.0,
+  "lessons",             "Lessons learned & closure",        "closure",    "2026-07-11",   "2026-07-15",   "Consultant",              "handover",                            0.0
+) %>%
+  rowid_to_column()
+
+
+project_df <- project_df %>%
+  mutate(
+    color = case_when(
+      is.na(parent) ~ "#4c78a8",
+      parent == "planning"  ~ "#72b7b2",
+      parent == "execution" ~ "#f58518",
+      parent == "closure"   ~ "#54a24b",
+      TRUE ~ "#999999"
+    )
+  )
+
+project_data <- project_df %>%
+  select(dependency = id, dependency_name = name) %>%
+  distinct() %>%
+  left_join(
+    x = project_df %>%
+      select(rowid, dependency) %>%
+      mutate(dependency = str_split(dependency, ",")) %>%
+      unnest(cols = dependency),
+    y = .,
+    by = "dependency"
+  ) %>%
+  na.omit() %>%
+  group_by(rowid) %>%
+  summarise(
+    dependency = str_c(dependency, collapse = ","),
+    dependency_name = str_c(dependency_name, collapse = "<br>")
+  ) %>%
+  ungroup() %>%
+  select(rowid, dependency_name) %>%
+  left_join(
+    x = project_df,
+    y = .,
+    by = "rowid"
+  ) %>%
+  mutate(
+    start = datetime_to_ts(as.Date(start)),
+    end   = datetime_to_ts(as.Date(end))
+  ) %>%
+  select(
+    id, name, parent, start, end, assignee,
+    dependency, dependency_name, completed_amount,
+    color
+  ) %>%
+  pmap(
+    function(
+    id, name, parent, start, end, assignee,
+    dependency, dependency_name, completed_amount,
+    color
+    ) {
+      out <- list(
+        id    = id,
+        name  = name,
+        start = start,
+        end   = end
+      )
+      
+      if (!is.na(parent))   out$parent   <- parent
+      if (!is.na(assignee)) out$assignee <- assignee
+      
+      if (!is.na(dependency)) {
+        deps <- strsplit(dependency, ",")[[1]]
+        deps <- trimws(deps)
+        out$dependency <- as.list(deps)
+      }
+      
+      if (!is.na(dependency_name)) {
+        out$dependency_name <- dependency_name
+      }
+      
+      if (!is.na(completed_amount)) {
+        out$completed <- list(amount = completed_amount)
+      }
+      
+      if (!is.na(color)) {
+        out$color <- color
+      }
+      
+      out
+    })
+
+gantt_chart <- highchart(
+  type = "gantt",
+  width = 1200,
+  height = 600
+) %>%
+  hc_add_series(
+    name = "IDB Water Research – Project Plan",
+    data = project_data
+  ) %>%
+  hc_title(text = NA) %>%
+  hc_chart(
+    marginBottom = 30,
+    scrollablePlotArea = list(
+      minHeight = 718,
+      opacity = 1
+    ),
+    backgroundColor = "#FFFFFF",
+    plotBackgroundColor = "#FFFFFF",
+    plotBorderWidth = 0
+  ) %>%
+  hc_xAxis(
+    type = "datetime",
+    currentDateIndicator = TRUE,
+    title = list(text = NA)
+  ) %>%
+  hc_yAxis(
+    type = "treegrid",
+    title = list(text = NA),
+    grid = list(
+      columns = list(
+        list( # Coluna 1: Task
+          title  = list(text = "Task"),
+          labels = list(format = "{point.name}")
+        ),
+        list( # Coluna 2: Assignee
+          title  = list(text = "Assignee"),
+          labels = list(format = "{point.assignee}")
+        )
+      )
+    )
+  ) %>%
+  hc_tooltip(
+    useHTML = TRUE,
+    formatter = JS("
+    function () {
+      var p = this.point;
+
+      return `
+        <div style='font-weight:bold; font-size:13px; margin-bottom:6px;'>
+          ${p.name}
+        </div>
+
+        <table style='border-collapse:collapse;'>
+          <tr>
+            <td style='padding:4px 8px; font-weight:bold;'>Assignee</td>
+            <td style='padding:4px 8px;'>${p.assignee || '-'}</td>
+          </tr>
+          <tr>
+            <td style='padding:4px 8px; font-weight:bold;'>Start</td>
+            <td style='padding:4px 8px;'>${Highcharts.dateFormat('%Y-%m-%d', p.start)}</td>
+          </tr>
+          <tr>
+            <td style='padding:4px 8px; font-weight:bold;'>End</td>
+            <td style='padding:4px 8px;'>${p.end ? Highcharts.dateFormat('%Y-%m-%d', p.end) : '-'}</td>
+          </tr>
+          <tr>
+            <td style='padding:4px 8px; font-weight:bold;'>Dependencies</td>
+            <td style='padding:4px 8px;'>${p.dependency_name || '-'}</td>
+          </tr>
+          <tr>
+            <td style='padding:4px 8px; font-weight:bold;'>Completed</td>
+            <td style='padding:4px 8px;'>${p.completed.amount !== undefined ? p.completed.amount * 100 + '%' : '-'}</td>
+          </tr>
+        </table>
+      `;
+    }
+  ")
+  )
+
+
+gantt_chart
+
+```
+
+
+------------------------------------------------------------------------
+
+## Final Remarks {.section-divider}
+
+------------------------------------------------------------------------
+
+## Final Remarks {.unlisted}
+
+-   The PoC demonstrates:
+    -   Technical capability and data skills\
+    -   Sector and institutional understanding\
+    -   Alignment with the Terms of Reference\
+-   Provides a solid foundation to scale into a full IDB project\
+-   Ready to deepen and extend the work jointly with IDB teams
+
+------------------------------------------------------------------------
+
+## Thank You {.unlisted}
+
+**Contact**
+
+d.miro1089\@gmail.com\
+
+[LinkedIn](https://www.linkedin.com/in/diego-miro){target="_blank"}
+

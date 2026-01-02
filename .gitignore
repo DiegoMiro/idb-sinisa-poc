@@ -1,0 +1,26 @@
+# --- R / RStudio ---
+.Rproj.user/
+.Rhistory
+.RData
+.Ruserdata
+*.Rproj
+
+# --- os ---
+.DS_Store
+Thumbs.db
+
+# --- local environment / configs ---
+.Renv
+.Rprofile
+
+# --- logs and raw data ---
+data/raw/
+logs/
+
+# --- tmp ---
+tmp/
+.temp/
+
+# --- renv ---
+renv/library/
+renv/staging/
