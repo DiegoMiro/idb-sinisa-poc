@@ -25,17 +25,19 @@ Everything is **open, verifiable, replicable, and auditable**.
 
 ```
 .
-├── data/
-│   ├── raw/            # Downloaded files (zip + extracted)
-│   └── processed/      # Clean datasets produced by the pipeline
-│
-├── scripts/
+├── R/
 │   ├── 01_download_and_unzip_sinisa.R
 │   ├── 02_prepare_sinisa_datasets.R
 │   ├── 03_compare_sinisa_ibge.R
 │   └── 04_prepare_literature_matrix.R
 │
-├── logs/               # Structured logs for transparency
+├── data/
+│   ├── raw/            # Downloaded files (--.gitignore--)
+│   └── processed/      # Clean datasets produced by the pipeline
+│
+├── logs/               # Structured logs for transparency (--.gitignore--)
+│
+├── renv/               # Environment
 │
 ├── quarto/
 │   ├── bid_sinisa_poc_presentation.qmd
