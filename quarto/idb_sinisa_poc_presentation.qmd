@@ -274,7 +274,7 @@ The primary goal of this Proof of Concept (PoC) is to demonstrate the knowledge 
 
 - Validate feasibility of the approach proposed in the Terms of Reference (ToR).
 - Provide an initial foundation for a scalable analytical solution.
-- Develop a R package with a ready-to-use dataset, index calculation, and dashboard.
+- Develop a R workflow with a ready-to-use dataset and index calculation.
 - Deliver a transparent and reproducible workflow.
 
 ------------------------------------------------------------------------

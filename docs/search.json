@@ -11,7 +11,7 @@
     "href": "index.html#project-context-1",
     "title": "IDB Proof of Concept",
     "section": "Project Context",
-    "text": "Project Context\nThe primary goal of this Proof of Concept (PoC) is to demonstrate the knowledge and skills required for the Assistant Research Consultant position, as described in the LinkedIn posting.\n\nValue Proposition of the PoC\n\nValidate feasibility of the approach proposed in the Terms of Reference (ToR).\nProvide an initial foundation for a scalable analytical solution.\nDevelop a R package with a ready-to-use dataset, index calculation, and dashboard.\nDeliver a transparent and reproducible workflow."
+    "text": "Project Context\nThe primary goal of this Proof of Concept (PoC) is to demonstrate the knowledge and skills required for the Assistant Research Consultant position, as described in the LinkedIn posting.\n\nValue Proposition of the PoC\n\nValidate feasibility of the approach proposed in the Terms of Reference (ToR).\nProvide an initial foundation for a scalable analytical solution.\nDevelop a R workflow with a ready-to-use dataset and index calculation.\nDeliver a transparent and reproducible workflow."
   },
   {
     "objectID": "index.html#project-context-2",
